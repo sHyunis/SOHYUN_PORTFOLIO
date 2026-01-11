@@ -1,10 +1,10 @@
 import { useRef, useState } from "react";
 import { useFrame } from "@react-three/fiber";
-import { Text, useCursor } from "@react-three/drei";
-import { useGameStore } from "@/lib/store";
+import { Text, useCursor, Sparkles } from "@react-three/drei";
+import { useGameStore } from "@/store/gameStore";
 import * as THREE from "three";
 
-import { HOUSE_POSITIONS } from "@/lib/constants";
+import { HOUSE_POSITIONS } from "./constants";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function House({ position, color, label, section }: { position: [number, number, number], color: string, label: string, section: any }) {
@@ -24,12 +24,13 @@ function House({ position, color, label, section }: { position: [number, number,
 
   return (
     <group position={position}>
-      {/* House Body */}
       <mesh
         position={[0, 1.5, 0]}
         onClick={(e) => {
           e.stopPropagation();
-          setActiveSection(section);
+          // Walk to the front of the house instead of opening immediately
+          const targetZ = position[2] + 1.5; // Stand closer to the door
+          useGameStore.getState().setTargetPosition([position[0], 0, targetZ]);
         }}
         onPointerOver={() => setHover(true)}
         onPointerOut={() => setHover(false)}
@@ -44,7 +45,6 @@ function House({ position, color, label, section }: { position: [number, number,
         />
       </mesh>
       
-      {/* Roof */}
       <mesh position={[0, 3.75, 0]} rotation={[0, Math.PI / 4, 0]}>
         <coneGeometry args={[2.5, 1.5, 4]} />
         <meshStandardMaterial 
@@ -54,9 +54,8 @@ function House({ position, color, label, section }: { position: [number, number,
         />
       </mesh>
 
-      {/* Door / Portal */}
       <group position={[0, 1, 1.51]}>
-        <mesh ref={doorRef} position={[0.5, 0, 0]}> {/* Pivot point adjustment */}
+        <mesh ref={doorRef} position={[0.5, 0, 0]}>
            <boxGeometry args={[1, 2, 0.1]} />
            <meshStandardMaterial 
              color="#000" 
@@ -67,15 +66,15 @@ function House({ position, color, label, section }: { position: [number, number,
         </mesh>
       </group>
 
-      {/* Label */}
       <Text
-        position={[0, 4.5, 0]}
-        fontSize={0.5}
-        color="#e0f2fe"
+        position={[0, 5.5, 0]}
+        fontSize={0.6}
+        color="#4fd1c5"
         anchorX="center"
         anchorY="middle"
-        anchorX="center"
-        anchorY="middle"
+        letterSpacing={0.05}
+        outlineWidth={0.02}
+        outlineColor="#000000"
       >
         {label}
       </Text>
@@ -88,7 +87,6 @@ export function World() {
 
   return (
     <group>
-      {/* Ground */}
       <mesh 
         rotation={[-Math.PI / 2, 0, 0]} 
         position={[0, -0.1, 0]}
@@ -102,12 +100,12 @@ export function World() {
       </mesh>
       <gridHelper args={[100, 100, "#444", "#222"]} position={[0, 0.01, 0]} />
 
-      {/* Houses */}
-      <House position={HOUSE_POSITIONS.about} color="#1d1d1f" label="About" section="about" />
-      <House position={HOUSE_POSITIONS.work} color="#1d1d1f" label="Work" section="work" />
-      <House position={HOUSE_POSITIONS.projects} color="#1d1d1f" label="Projects" section="projects" />
-      <House position={HOUSE_POSITIONS.skills} color="#1d1d1f" label="Skills" section="skills" />
-      <House position={HOUSE_POSITIONS.contact} color="#1d1d1f" label="Contact" section="contact" />
+      <House position={HOUSE_POSITIONS.about as [number, number, number]} color="#1d1d1f" label="About" section="about" />
+      <House position={HOUSE_POSITIONS.work as [number, number, number]} color="#1d1d1f" label="Work" section="work" />
+      <House position={HOUSE_POSITIONS.projects as [number, number, number]} color="#1d1d1f" label="Projects" section="projects" />
+      <House position={HOUSE_POSITIONS.skills as [number, number, number]} color="#1d1d1f" label="Skills" section="skills" />
+      <House position={HOUSE_POSITIONS.contact as [number, number, number]} color="#1d1d1f" label="Contact" section="contact" />
+      <House position={HOUSE_POSITIONS.guestbook as [number, number, number]} color="#1d1d1f" label="방명록" section="guestbook" />
     </group>
   );
 }

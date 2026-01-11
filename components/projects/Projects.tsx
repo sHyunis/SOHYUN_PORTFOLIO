@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { PROJECTS } from "@/lib/data";
+import { PROJECTS } from "@/components/data";
 import { ArrowUpRight } from "lucide-react";
 
 export function Projects() {

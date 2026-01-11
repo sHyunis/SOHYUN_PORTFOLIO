@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { EXPERIENCE } from "@/lib/data";
+import { EXPERIENCE } from "@/components/data";
 
 export function WorkExperience() {
   return (

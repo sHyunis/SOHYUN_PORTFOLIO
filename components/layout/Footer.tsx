@@ -1,4 +1,4 @@
-import { PROFILE } from "@/lib/data";
+import { PROFILE } from "@/components/data";
 
 export function Footer() {
   return (

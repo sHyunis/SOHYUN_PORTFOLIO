@@ -1,5 +1,5 @@
 import { Scene } from "@/components/3d/Scene";
-import { Interface } from "@/components/Interface";
+import { Interface } from "@/components/ui/Interface";
 
 export default function Home() {
   return (

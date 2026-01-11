@@ -1,14 +1,14 @@
 import { create } from "zustand";
 
-type Section = "about" | "work" | "projects" | "skills" | "contact" | null;
+type ActiveSection = "about" | "work" | "projects" | "skills" | "contact" | "guestbook" | null;
 
 interface GameState {
-  activeSection: Section;
-  setActiveSection: (section: Section) => void;
+  activeSection: ActiveSection;
+  setActiveSection: (section: ActiveSection) => void;
   targetPosition: [number, number, number] | null;
   setTargetPosition: (position: [number, number, number] | null) => void;
-  nearbySection: Section;
-  setNearbySection: (section: Section) => void;
+  nearbySection: ActiveSection;
+  setNearbySection: (section: ActiveSection) => void;
 }
 
 export const useGameStore = create<GameState>((set) => ({
