@@ -1,131 +1,37 @@
-import { useRef, useState } from "react";
-import { useFrame } from "@react-three/fiber";
-import { Text, useCursor, Sparkles } from "@react-three/drei";
 import { useGameStore } from "@/store/gameStore";
-import * as THREE from "three";
-
 import { HOUSE_POSITIONS } from "./constants";
 import { COLORS } from "@/constants/colors";
+import { House } from "./House";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function House({ position, color, label, section }: { position: [number, number, number], color: string, label: string, section: any }) {
-  const { setActiveSection, activeSection, nearbySection } = useGameStore();
-  const [hovered, setHover] = useState(false);
-  const [houseHovered, setHouseHover] = useState(false);
-  useCursor(hovered || houseHovered);
-
-  const doorRef = useRef<THREE.Mesh>(null);
-  const isActive = activeSection === section || nearbySection === section;
-
-  useFrame((state, delta) => {
-    if (doorRef.current) {
-      const targetRotation = isActive ? Math.PI / 2 : 0;
-      doorRef.current.rotation.y = THREE.MathUtils.lerp(doorRef.current.rotation.y, targetRotation, delta * 5);
-    }
-  });
-
-  return (
-    <group position={position}>
-      <mesh
-        position={[0, 1.5, 0]}
-        onClick={(e) => {
-          e.stopPropagation();
-          const targetZ = position[2] + 1.5;
-          useGameStore.getState().setTargetPosition([position[0], 0, targetZ]);
-        }}
-        onPointerOver={() => setHouseHover(true)}
-        onPointerOut={() => setHouseHover(false)}
-      >
-        <boxGeometry args={[3, 3, 3]} />
-        <meshStandardMaterial
-          color={COLORS.background.slate}
-          roughness={0.1}
-          metalness={0.8}
-          transparent
-          opacity={0.7}
-        />
-      </mesh>
-
-      <mesh
-        position={[0, 3.75, 0]}
-        rotation={[0, Math.PI / 4, 0]}
-        onClick={(e) => {
-          e.stopPropagation();
-          const targetZ = position[2] + 1.5;
-          useGameStore.getState().setTargetPosition([position[0], 0, targetZ]);
-        }}
-        onPointerOver={() => setHouseHover(true)}
-        onPointerOut={() => setHouseHover(false)}
-      >
-        <coneGeometry args={[2.5, 1.5, 4]} />
-        <meshStandardMaterial
-          color={COLORS.background.slateDark}
-          roughness={0.1}
-          metalness={0.9}
-          transparent
-          opacity={0.7}
-        />
-      </mesh>
-
-      <group position={[0, 1, 1.51]}>
-        <mesh
-          ref={doorRef}
-          position={[0.5, 0, 0]}
-          onPointerOver={() => setHover(true)}
-          onPointerOut={() => setHover(false)}
-        >
-           <boxGeometry args={[1, 2, 0.1]} />
-           <meshStandardMaterial
-             color={COLORS.neutral.black}
-             emissive={COLORS.primary.skyBlue}
-             emissiveIntensity={hovered || isActive ? 2 : 0.5}
-             toneMapped={false}
-           />
-        </mesh>
-      </group>
-
-      <Text
-        position={[0, 5.5, 0]}
-        fontSize={0.45}
-        color={COLORS.white.base}
-        anchorX="center"
-        anchorY="middle"
-        letterSpacing={0.2}
-        outlineWidth={0.03}
-        outlineColor={COLORS.neutral.black}
-        outlineOpacity={1}
-        fillOpacity={1}
-      >
-        {label.toUpperCase()}
-      </Text>
-    </group>
-  );
-}
+const HOUSES = [
+  { id: "about", label: "About" },
+  { id: "work", label: "Work" },
+  { id: "projects", label: "Projects" },
+  { id: "skills", label: "Skills" },
+  { id: "contact", label: "Contact" },
+  { id: "guestbook", label: "방명록" },
+] as const;
 
 export function World() {
   const { setTargetPosition } = useGameStore();
 
+  const handleGroundClick = (e: any) => {
+    e.stopPropagation();
+    setTargetPosition([e.point.x, 0, e.point.z]);
+  };
+
   return (
     <group>
-      <mesh 
-        rotation={[-Math.PI / 2, 0, 0]} 
-        position={[0, -0.1, 0]}
-        onClick={(e) => {
-          e.stopPropagation();
-          setTargetPosition([e.point.x, 0, e.point.z]);
-        }}
-      >
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.1, 0]} onClick={handleGroundClick}>
         <planeGeometry args={[100, 100]} />
         <meshStandardMaterial color={COLORS.neutral.mediumGray} roughness={0.8} metalness={0.2} />
       </mesh>
+
       <gridHelper args={[100, 100, COLORS.neutral.gray, COLORS.neutral.darkGray]} position={[0, 0.01, 0]} />
 
-      <House position={HOUSE_POSITIONS.about as [number, number, number]} color={COLORS.background.veryDark} label="About" section="about" />
-      <House position={HOUSE_POSITIONS.work as [number, number, number]} color={COLORS.background.veryDark} label="Work" section="work" />
-      <House position={HOUSE_POSITIONS.projects as [number, number, number]} color={COLORS.background.veryDark} label="Projects" section="projects" />
-      <House position={HOUSE_POSITIONS.skills as [number, number, number]} color={COLORS.background.veryDark} label="Skills" section="skills" />
-      <House position={HOUSE_POSITIONS.contact as [number, number, number]} color={COLORS.background.veryDark} label="Contact" section="contact" />
-      <House position={HOUSE_POSITIONS.guestbook as [number, number, number]} color={COLORS.background.veryDark} label="방명록" section="guestbook" />
+      {HOUSES.map((house) => (
+        <House key={house.id} position={HOUSE_POSITIONS[house.id] as [number, number, number]} label={house.label} section={house.id} />
+      ))}
     </group>
   );
 }
