@@ -5,6 +5,7 @@ import { useGameStore } from "@/store/gameStore";
 import * as THREE from "three";
 
 import { HOUSE_POSITIONS } from "./constants";
+import { COLORS } from "@/constants/colors";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function House({ position, color, label, section }: { position: [number, number, number], color: string, label: string, section: any }) {
@@ -35,31 +36,31 @@ function House({ position, color, label, section }: { position: [number, number,
         onPointerOut={() => setHover(false)}
       >
         <boxGeometry args={[3, 3, 3]} />
-        <meshStandardMaterial 
-          color={hovered ? "#38bdf8" : "#1e293b"} 
-          roughness={0.1} 
+        <meshStandardMaterial
+          color={hovered ? COLORS.primary.skyBlue : COLORS.background.slate}
+          roughness={0.1}
           metalness={0.8}
-          emissive={hovered ? "#0ea5e9" : "#000000"}
+          emissive={hovered ? COLORS.primary.skyBlueEmissive : COLORS.neutral.black}
           emissiveIntensity={0.2}
         />
       </mesh>
       
       <mesh position={[0, 3.75, 0]} rotation={[0, Math.PI / 4, 0]}>
         <coneGeometry args={[2.5, 1.5, 4]} />
-        <meshStandardMaterial 
-          color={hovered ? "#38bdf8" : "#0f172a"} 
-          roughness={0.1} 
-          metalness={0.9} 
+        <meshStandardMaterial
+          color={hovered ? COLORS.primary.skyBlue : COLORS.background.slateDark}
+          roughness={0.1}
+          metalness={0.9}
         />
       </mesh>
 
       <group position={[0, 1, 1.51]}>
         <mesh ref={doorRef} position={[0.5, 0, 0]}>
            <boxGeometry args={[1, 2, 0.1]} />
-           <meshStandardMaterial 
-             color="#000" 
-             emissive="#38bdf8" 
-             emissiveIntensity={hovered || isActive ? 2 : 0.5} 
+           <meshStandardMaterial
+             color={COLORS.neutral.black}
+             emissive={COLORS.primary.skyBlue}
+             emissiveIntensity={hovered || isActive ? 2 : 0.5}
              toneMapped={false}
            />
         </mesh>
@@ -68,12 +69,12 @@ function House({ position, color, label, section }: { position: [number, number,
       <Text
         position={[0, 5.5, 0]}
         fontSize={0.6}
-        color="#4fd1c5"
+        color={COLORS.primary.cyan}
         anchorX="center"
         anchorY="middle"
         letterSpacing={0.05}
         outlineWidth={0.02}
-        outlineColor="#000000"
+        outlineColor={COLORS.neutral.black}
       >
         {label}
       </Text>
@@ -95,16 +96,16 @@ export function World() {
         }}
       >
         <planeGeometry args={[100, 100]} />
-        <meshStandardMaterial color="#333" roughness={0.8} metalness={0.2} />
+        <meshStandardMaterial color={COLORS.neutral.mediumGray} roughness={0.8} metalness={0.2} />
       </mesh>
-      <gridHelper args={[100, 100, "#444", "#222"]} position={[0, 0.01, 0]} />
+      <gridHelper args={[100, 100, COLORS.neutral.gray, COLORS.neutral.darkGray]} position={[0, 0.01, 0]} />
 
-      <House position={HOUSE_POSITIONS.about as [number, number, number]} color="#1d1d1f" label="About" section="about" />
-      <House position={HOUSE_POSITIONS.work as [number, number, number]} color="#1d1d1f" label="Work" section="work" />
-      <House position={HOUSE_POSITIONS.projects as [number, number, number]} color="#1d1d1f" label="Projects" section="projects" />
-      <House position={HOUSE_POSITIONS.skills as [number, number, number]} color="#1d1d1f" label="Skills" section="skills" />
-      <House position={HOUSE_POSITIONS.contact as [number, number, number]} color="#1d1d1f" label="Contact" section="contact" />
-      <House position={HOUSE_POSITIONS.guestbook as [number, number, number]} color="#1d1d1f" label="방명록" section="guestbook" />
+      <House position={HOUSE_POSITIONS.about as [number, number, number]} color={COLORS.background.veryDark} label="About" section="about" />
+      <House position={HOUSE_POSITIONS.work as [number, number, number]} color={COLORS.background.veryDark} label="Work" section="work" />
+      <House position={HOUSE_POSITIONS.projects as [number, number, number]} color={COLORS.background.veryDark} label="Projects" section="projects" />
+      <House position={HOUSE_POSITIONS.skills as [number, number, number]} color={COLORS.background.veryDark} label="Skills" section="skills" />
+      <House position={HOUSE_POSITIONS.contact as [number, number, number]} color={COLORS.background.veryDark} label="Contact" section="contact" />
+      <House position={HOUSE_POSITIONS.guestbook as [number, number, number]} color={COLORS.background.veryDark} label="방명록" section="guestbook" />
     </group>
   );
 }

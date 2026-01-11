@@ -9,6 +9,8 @@ interface GameState {
   setTargetPosition: (position: [number, number, number] | null) => void;
   nearbySection: ActiveSection;
   setNearbySection: (section: ActiveSection) => void;
+  avatarPosition: [number, number, number];
+  setAvatarPosition: (position: [number, number, number]) => void;
 }
 
 export const useGameStore = create<GameState>((set) => ({
@@ -18,4 +20,6 @@ export const useGameStore = create<GameState>((set) => ({
   setTargetPosition: (position) => set({ targetPosition: position }),
   nearbySection: null,
   setNearbySection: (section) => set({ nearbySection: section }),
+  avatarPosition: [0, 0, 0],
+  setAvatarPosition: (position) => set({ avatarPosition: position }),
 }));

@@ -6,6 +6,7 @@ import { useGameStore } from "@/store/gameStore";
 import * as THREE from "three";
 
 import { HOUSE_POSITIONS } from "./constants";
+import { COLORS } from "@/constants/colors";
 
 export function Avatar() {
   const group = useRef<THREE.Group>(null);
@@ -128,6 +129,13 @@ export function Avatar() {
 
     group.current.position.copy(position.current);
 
+    // Update avatar position in store
+    useGameStore.getState().setAvatarPosition([
+      position.current.x,
+      position.current.y,
+      position.current.z
+    ]);
+
     let nearest = null;
     const threshold = 6;
     
@@ -193,45 +201,45 @@ export function Avatar() {
     <group ref={group} position={[0, 0, 0]} scale={0.5}>
       <mesh position={[0, 1.4, 0]}>
         <boxGeometry args={[0.4, 0.3, 0.35]} />
-        <meshStandardMaterial color="#ffffff" roughness={0.2} metalness={0.8} />
+        <meshStandardMaterial color={COLORS.avatar.head} roughness={0.2} metalness={0.8} />
       </mesh>
       <mesh position={[0, 1.4, 0.15]}>
         <boxGeometry args={[0.3, 0.08, 0.1]} />
-        <meshStandardMaterial color="#2997ff" emissive="#2997ff" emissiveIntensity={2} />
+        <meshStandardMaterial color={COLORS.avatar.accent} emissive={COLORS.avatar.accent} emissiveIntensity={2} />
       </mesh>
 
       <mesh position={[0, 0.8, 0]}>
         <boxGeometry args={[0.5, 0.8, 0.3]} />
-        <meshStandardMaterial color="#1d1d1f" roughness={0.5} metalness={0.5} />
+        <meshStandardMaterial color={COLORS.avatar.body} roughness={0.5} metalness={0.5} />
       </mesh>
       <mesh position={[0, 0.9, 0.16]}>
         <circleGeometry args={[0.08, 32]} />
-        <meshStandardMaterial color="#2997ff" emissive="#2997ff" emissiveIntensity={1} />
+        <meshStandardMaterial color={COLORS.avatar.accent} emissive={COLORS.avatar.accent} emissiveIntensity={1} />
       </mesh>
 
       <group position={[-0.35, 1.1, 0]}>
         <mesh ref={leftArmRef} position={[0, -0.3, 0]}>
           <boxGeometry args={[0.15, 0.7, 0.15]} />
-          <meshStandardMaterial color="#ffffff" roughness={0.2} metalness={0.8} />
+          <meshStandardMaterial color={COLORS.avatar.head} roughness={0.2} metalness={0.8} />
         </mesh>
       </group>
       <group position={[0.35, 1.1, 0]}>
         <mesh ref={rightArmRef} position={[0, -0.3, 0]}>
           <boxGeometry args={[0.15, 0.7, 0.15]} />
-          <meshStandardMaterial color="#ffffff" roughness={0.2} metalness={0.8} />
+          <meshStandardMaterial color={COLORS.avatar.head} roughness={0.2} metalness={0.8} />
         </mesh>
       </group>
-      
+
       <group position={[-0.15, 0.4, 0]}>
         <mesh ref={leftLegRef} position={[0, -0.35, 0]}>
           <boxGeometry args={[0.18, 0.8, 0.18]} />
-          <meshStandardMaterial color="#333333" roughness={0.5} metalness={0.5} />
+          <meshStandardMaterial color={COLORS.avatar.limbs} roughness={0.5} metalness={0.5} />
         </mesh>
       </group>
       <group position={[0.15, 0.4, 0]}>
         <mesh ref={rightLegRef} position={[0, -0.35, 0]}>
           <boxGeometry args={[0.18, 0.8, 0.18]} />
-          <meshStandardMaterial color="#333333" roughness={0.5} metalness={0.5} />
+          <meshStandardMaterial color={COLORS.avatar.limbs} roughness={0.5} metalness={0.5} />
         </mesh>
       </group>
     </group>
