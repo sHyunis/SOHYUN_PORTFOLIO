@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useCallback } from "react";
 import { useGameStore } from "@/store/gameStore";
 import * as THREE from "three";
 
@@ -18,15 +18,17 @@ export function Avatar() {
   const leftLegRef = useRef<THREE.Mesh>(null);
   const rightLegRef = useRef<THREE.Mesh>(null);
 
-  const { activeSection, setTargetPosition } = useGameStore();
+  // Use selectors to only subscribe to specific state
+  const activeSection = useGameStore((state) => state.activeSection);
+  const setTargetPosition = useGameStore((state) => state.setTargetPosition);
 
   const isControlActive = !activeSection;
-  const movement = useKeyboardControls(isControlActive, () => setTargetPosition(null));
+  const handleKeyPress = useCallback(() => setTargetPosition(null), [setTargetPosition]);
+  const movementRef = useKeyboardControls(isControlActive, handleKeyPress);
 
-  const { position, direction } = useAvatarMovement(groupRef, movement);
-  const isMoving = direction.current.length() > 0;
+  const { position, direction } = useAvatarMovement(groupRef, movementRef);
 
-  useAvatarAnimation(groupRef, leftArmRef, rightArmRef, leftLegRef, rightLegRef, isMoving);
+  useAvatarAnimation(groupRef, leftArmRef, rightArmRef, leftLegRef, rightLegRef, direction);
 
   useCameraControl(position.current);
   useNearbySection(position.current);

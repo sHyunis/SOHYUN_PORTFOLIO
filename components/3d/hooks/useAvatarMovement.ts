@@ -2,8 +2,9 @@ import { useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { useGameStore } from "@/store/gameStore";
+import { avatarPosition } from "@/store/avatarPosition";
 
-interface MovementInput {
+interface IMovementInput {
   forward: boolean;
   backward: boolean;
   left: boolean;
@@ -14,15 +15,16 @@ const MOVEMENT_SPEED = 5;
 
 export function useAvatarMovement(
   groupRef: React.RefObject<THREE.Group | null>,
-  movement: MovementInput
+  movementRef: React.RefObject<IMovementInput | null>
 ) {
   const position = useRef(new THREE.Vector3(0, 0, 0));
   const direction = useRef(new THREE.Vector3());
 
-  const { targetPosition, setTargetPosition, joystickInput, setAvatarPosition } = useGameStore();
-
   useFrame((_, delta) => {
-    if (!groupRef.current) return;
+    if (!groupRef.current || !movementRef.current) return;
+
+    const { targetPosition, setTargetPosition, joystickInput } = useGameStore.getState();
+    const movement = movementRef.current;
 
     direction.current.set(0, 0, 0);
 
@@ -58,7 +60,10 @@ export function useAvatarMovement(
 
     groupRef.current.position.copy(position.current);
 
-    setAvatarPosition([position.current.x, position.current.y, position.current.z]);
+    // Update global position object (no React re-renders)
+    avatarPosition.x = position.current.x;
+    avatarPosition.y = position.current.y;
+    avatarPosition.z = position.current.z;
 
     if (direction.current.length() > 0) {
       const targetRotationY = Math.atan2(direction.current.x, direction.current.z);

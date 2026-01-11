@@ -1,51 +1,56 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { useGameStore } from "@/store/gameStore";
 import { COLORS } from "@/constants/colors";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 export function Joystick() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [position, setPosition] = useState({ x: 0, y: 0 });
-  const { setJoystickInput, activeSection } = useGameStore();
-
-  const maxDistance = 40; // Maximum distance from center
+  const [hasInitialized, setHasInitialized] = useState(false);
+  const setJoystickInput = useGameStore((state) => state.setJoystickInput);
+  const activeSection = useGameStore((state) => state.activeSection);
 
   useEffect(() => {
-    const handleMove = (clientX: number, clientY: number) => {
-      if (!isDragging) return;
-      if (!containerRef.current) return;
+    const timer = setTimeout(() => setHasInitialized(true), 2200);
+    return () => clearTimeout(timer);
+  }, []);
 
-      const rect = containerRef.current.getBoundingClientRect();
-      const centerX = rect.left + rect.width / 2;
-      const centerY = rect.top + rect.height / 2;
+  const maxDistance = 40;
 
-      let deltaX = clientX - centerX;
-      let deltaY = clientY - centerY;
+  const handleMove = useCallback((clientX: number, clientY: number) => {
+    if (!containerRef.current) return;
 
-      const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+    const rect = containerRef.current.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
 
-      if (distance > maxDistance) {
-        const angle = Math.atan2(deltaY, deltaX);
-        deltaX = Math.cos(angle) * maxDistance;
-        deltaY = Math.sin(angle) * maxDistance;
-      }
+    let deltaX = clientX - centerX;
+    let deltaY = clientY - centerY;
 
-      setPosition({ x: deltaX, y: deltaY });
+    const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
 
-      const normalizedX = deltaX / maxDistance;
-      const normalizedY = deltaY / maxDistance;
+    if (distance > maxDistance) {
+      const angle = Math.atan2(deltaY, deltaX);
+      deltaX = Math.cos(angle) * maxDistance;
+      deltaY = Math.sin(angle) * maxDistance;
+    }
 
-      setJoystickInput({ x: normalizedX, y: normalizedY });
-    };
+    setPosition({ x: deltaX, y: deltaY });
+    setJoystickInput({ x: deltaX / maxDistance, y: deltaY / maxDistance });
+  }, [setJoystickInput]);
+
+  useEffect(() => {
+    if (!isDragging) return;
 
     const handleMouseMove = (e: MouseEvent) => {
       handleMove(e.clientX, e.clientY);
     };
 
     const handleTouchMove = (e: TouchEvent) => {
+      e.preventDefault();
       if (e.touches.length > 0) {
         handleMove(e.touches[0].clientX, e.touches[0].clientY);
       }
@@ -53,11 +58,13 @@ export function Joystick() {
 
     const handleEnd = () => {
       setIsDragging(false);
+      setPosition({ x: 0, y: 0 });
+      setJoystickInput({ x: 0, y: 0 });
     };
 
     window.addEventListener("mousemove", handleMouseMove);
     window.addEventListener("mouseup", handleEnd);
-    window.addEventListener("touchmove", handleTouchMove);
+    window.addEventListener("touchmove", handleTouchMove, { passive: false });
     window.addEventListener("touchend", handleEnd);
 
     return () => {
@@ -65,67 +72,70 @@ export function Joystick() {
       window.removeEventListener("mouseup", handleEnd);
       window.removeEventListener("touchmove", handleTouchMove);
       window.removeEventListener("touchend", handleEnd);
-
-      if (!isDragging) {
-        setPosition({ x: 0, y: 0 });
-        setJoystickInput({ x: 0, y: 0 });
-      }
     };
-  }, [isDragging, setJoystickInput]);
+  }, [isDragging, handleMove, setJoystickInput]);
 
-  const handleStart = (e: React.MouseEvent | React.TouchEvent) => {
+  const handleMouseDown = (e: React.MouseEvent) => {
     if (activeSection) return;
     e.preventDefault();
     setIsDragging(true);
   };
 
-  if (activeSection) return null;
+  const handleTouchStart = useCallback(() => {
+    if (activeSection) return;
+    setIsDragging(true);
+  }, [activeSection]);
 
   return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.8 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.8, delay: 3 }}
-      className="fixed bottom-6 right-6 z-50 pointer-events-auto"
-    >
-      <div
-        ref={containerRef}
-        className="relative w-32 h-32 bg-black/40 backdrop-blur-md border border-white/20 rounded-full flex items-center justify-center"
-        onMouseDown={handleStart}
-        onTouchStart={handleStart}
-      >
-        <div className="absolute inset-4 border-2 border-white/20 rounded-full" />
-
-        <div className="absolute w-2 h-2 bg-white/30 rounded-full" />
-
-        <div className="absolute top-2 left-1/2 -translate-x-1/2">
-          <div className="w-6 h-6 flex items-center justify-center text-white/40 text-xs">▲</div>
-        </div>
-        <div className="absolute bottom-2 left-1/2 -translate-x-1/2">
-          <div className="w-6 h-6 flex items-center justify-center text-white/40 text-xs">▼</div>
-        </div>
-        <div className="absolute left-2 top-1/2 -translate-y-1/2">
-          <div className="w-6 h-6 flex items-center justify-center text-white/40 text-xs">◀</div>
-        </div>
-        <div className="absolute right-2 top-1/2 -translate-y-1/2">
-          <div className="w-6 h-6 flex items-center justify-center text-white/40 text-xs">▶</div>
-        </div>
-
-        <div
-          className="absolute w-12 h-12 rounded-full transition-all"
-          style={{
-            transform: `translate(${position.x}px, ${position.y}px)`,
-            background: isDragging
-              ? `radial-gradient(circle, ${COLORS.primary.skyBlue}, ${COLORS.primary.skyBlueEmissive})`
-              : `radial-gradient(circle, ${COLORS.white.opacity70}, ${COLORS.white.opacity50})`,
-            boxShadow: isDragging
-              ? `0 0 20px ${COLORS.primary.skyBlueEmissive}`
-              : "0 2px 10px rgba(0,0,0,0.3)",
+    <AnimatePresence>
+      {!activeSection && (
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.8 }}
+          transition={{
+            duration: hasInitialized ? 0.2 : 0.5,
+            delay: hasInitialized ? 0 : 1.8
           }}
+          className="fixed bottom-6 right-6 z-50 pointer-events-auto"
         >
-          <div className="absolute inset-2 border-2 border-white/30 rounded-full" />
-        </div>
-      </div>
-    </motion.div>
+          <div
+            ref={containerRef}
+            className="relative w-32 h-32 bg-black/40 backdrop-blur-md border border-white/20 rounded-full flex items-center justify-center"
+            onMouseDown={handleMouseDown}
+            onTouchStart={handleTouchStart}
+          >
+            <div className="absolute inset-4 border-2 border-white/20 rounded-full" />
+            <div className="absolute w-2 h-2 bg-white/30 rounded-full" />
+            <div className="absolute top-2 left-1/2 -translate-x-1/2">
+              <div className="w-6 h-6 flex items-center justify-center text-white/40 text-xs">▲</div>
+            </div>
+            <div className="absolute bottom-2 left-1/2 -translate-x-1/2">
+              <div className="w-6 h-6 flex items-center justify-center text-white/40 text-xs">▼</div>
+            </div>
+            <div className="absolute left-2 top-1/2 -translate-y-1/2">
+              <div className="w-6 h-6 flex items-center justify-center text-white/40 text-xs">◀</div>
+            </div>
+            <div className="absolute right-2 top-1/2 -translate-y-1/2">
+              <div className="w-6 h-6 flex items-center justify-center text-white/40 text-xs">▶</div>
+            </div>
+            <div
+              className="absolute w-12 h-12 rounded-full transition-all"
+              style={{
+                transform: `translate(${position.x}px, ${position.y}px)`,
+                background: isDragging
+                  ? `radial-gradient(circle, ${COLORS.primary.skyBlue}, ${COLORS.primary.skyBlueEmissive})`
+                  : `radial-gradient(circle, ${COLORS.white.opacity70}, ${COLORS.white.opacity50})`,
+                boxShadow: isDragging
+                  ? `0 0 20px ${COLORS.primary.skyBlueEmissive}`
+                  : "0 2px 10px rgba(0,0,0,0.3)",
+              }}
+            >
+              <div className="absolute inset-2 border-2 border-white/30 rounded-full" />
+            </div>
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }

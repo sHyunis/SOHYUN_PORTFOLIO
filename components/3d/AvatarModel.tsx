@@ -2,14 +2,14 @@ import { forwardRef, RefObject } from "react";
 import * as THREE from "three";
 import { COLORS } from "@/constants/colors";
 
-interface AvatarModelProps {
+interface IAvatarModelProps {
   leftArmRef:RefObject<THREE.Mesh | null>;
   rightArmRef: RefObject<THREE.Mesh | null>;
   leftLegRef: RefObject<THREE.Mesh | null>;
   rightLegRef: RefObject<THREE.Mesh | null>;
 }
 
-export const AvatarModel = forwardRef<THREE.Group | null, AvatarModelProps>(
+export const AvatarModel = forwardRef<THREE.Group | null, IAvatarModelProps>(
   ({ leftArmRef, rightArmRef, leftLegRef, rightLegRef }, ref) => {
     return (
       <group ref={ref} position={[0, 0, 0]} scale={0.5}>

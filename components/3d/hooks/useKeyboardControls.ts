@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useEffect, useRef } from "react";
 
-interface MovementState {
+interface IMovementState {
   forward: boolean;
   backward: boolean;
   left: boolean;
@@ -14,51 +14,50 @@ const MOVEMENT_KEYS = {
   right: ["KeyD", "ArrowRight"],
 };
 
+const INITIAL_MOVEMENT: IMovementState = {
+  forward: false,
+  backward: false,
+  left: false,
+  right: false,
+};
+
 export function useKeyboardControls(isActive: boolean, onKeyPress?: () => void) {
-  const [movement, setMovement] = useState<MovementState>({
-    forward: false,
-    backward: false,
-    left: false,
-    right: false,
+  const movementRef = useRef<IMovementState>({ ...INITIAL_MOVEMENT });
+  const onKeyPressRef = useRef(onKeyPress);
+
+  useEffect(() => {
+    onKeyPressRef.current = onKeyPress;
   });
+
+  // Reset movement when becoming inactive
+  useEffect(() => {
+    if (!isActive) {
+      movementRef.current = { ...INITIAL_MOVEMENT };
+    }
+  }, [isActive]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (!isActive) return;
 
       const allKeys = Object.values(MOVEMENT_KEYS).flat();
-
       if (allKeys.includes(e.code)) {
-        onKeyPress?.();
+        onKeyPressRef.current?.();
       }
 
-      if (MOVEMENT_KEYS.forward.includes(e.code)) {
-        setMovement((m) => ({ ...m, forward: true }));
-      }
-      if (MOVEMENT_KEYS.backward.includes(e.code)) {
-        setMovement((m) => ({ ...m, backward: true }));
-      }
-      if (MOVEMENT_KEYS.left.includes(e.code)) {
-        setMovement((m) => ({ ...m, left: true }));
-      }
-      if (MOVEMENT_KEYS.right.includes(e.code)) {
-        setMovement((m) => ({ ...m, right: true }));
-      }
+      const m = movementRef.current;
+      if (MOVEMENT_KEYS.forward.includes(e.code)) m.forward = true;
+      if (MOVEMENT_KEYS.backward.includes(e.code)) m.backward = true;
+      if (MOVEMENT_KEYS.left.includes(e.code)) m.left = true;
+      if (MOVEMENT_KEYS.right.includes(e.code)) m.right = true;
     };
 
     const handleKeyUp = (e: KeyboardEvent) => {
-      if (MOVEMENT_KEYS.forward.includes(e.code)) {
-        setMovement((m) => ({ ...m, forward: false }));
-      }
-      if (MOVEMENT_KEYS.backward.includes(e.code)) {
-        setMovement((m) => ({ ...m, backward: false }));
-      }
-      if (MOVEMENT_KEYS.left.includes(e.code)) {
-        setMovement((m) => ({ ...m, left: false }));
-      }
-      if (MOVEMENT_KEYS.right.includes(e.code)) {
-        setMovement((m) => ({ ...m, right: false }));
-      }
+      const m = movementRef.current;
+      if (MOVEMENT_KEYS.forward.includes(e.code)) m.forward = false;
+      if (MOVEMENT_KEYS.backward.includes(e.code)) m.backward = false;
+      if (MOVEMENT_KEYS.left.includes(e.code)) m.left = false;
+      if (MOVEMENT_KEYS.right.includes(e.code)) m.right = false;
     };
 
     window.addEventListener("keydown", handleKeyDown);
@@ -67,11 +66,8 @@ export function useKeyboardControls(isActive: boolean, onKeyPress?: () => void) 
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
-      if (!isActive) {
-        setMovement({ forward: false, backward: false, left: false, right: false });
-      }
     };
-  }, [isActive, onKeyPress]);
+  }, [isActive]);
 
-  return movement;
+  return movementRef;
 }

@@ -1,16 +1,14 @@
 import { create } from "zustand";
 
-type ActiveSection = "about" | "work" | "projects" | "skills" | "contact" | "guestbook" | null;
+type TActiveSection = "about" | "work" | "projects" | "skills" | "contact" | "guestbook" | null;
 
 interface GameState {
-  activeSection: ActiveSection;
-  setActiveSection: (section: ActiveSection) => void;
+  activeSection: TActiveSection;
+  setActiveSection: (section: TActiveSection) => void;
   targetPosition: [number, number, number] | null;
   setTargetPosition: (position: [number, number, number] | null) => void;
-  nearbySection: ActiveSection;
-  setNearbySection: (section: ActiveSection) => void;
-  avatarPosition: [number, number, number];
-  setAvatarPosition: (position: [number, number, number]) => void;
+  nearbySection: TActiveSection;
+  setNearbySection: (section: TActiveSection) => void;
   joystickInput: { x: number; y: number };
   setJoystickInput: (input: { x: number; y: number }) => void;
 }
@@ -22,8 +20,6 @@ export const useGameStore = create<GameState>((set) => ({
   setTargetPosition: (position) => set({ targetPosition: position }),
   nearbySection: null,
   setNearbySection: (section) => set({ nearbySection: section }),
-  avatarPosition: [0, 0, 0],
-  setAvatarPosition: (position) => set({ avatarPosition: position }),
   joystickInput: { x: 0, y: 0 },
   setJoystickInput: (input) => set({ joystickInput: input }),
 }));

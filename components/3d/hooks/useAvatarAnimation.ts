@@ -10,12 +10,13 @@ export function useAvatarAnimation(
   rightArmRef: React.RefObject<THREE.Mesh | null>,
   leftLegRef: React.RefObject<THREE.Mesh | null>,
   rightLegRef: React.RefObject<THREE.Mesh | null>,
-  isMoving: boolean
+  directionRef: React.RefObject<THREE.Vector3>
 ) {
   useFrame((state) => {
     if (!groupRef.current) return;
 
     const time = state.clock.getElapsedTime();
+    const isMoving = directionRef.current.length() > 0;
     const animSpeed = isMoving ? ANIMATION_SPEED : IDLE_ANIMATION_SPEED;
 
     groupRef.current.position.y = Math.sin(time * animSpeed) * 0.05;

@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 
-interface Message {
+interface IMessage {
   id: number;
   name: string;
   content: string;
@@ -11,7 +11,7 @@ interface Message {
 }
 
 export function Guestbook() {
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<IMessage[]>([]);
   const [name, setName] = useState("");
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(true);

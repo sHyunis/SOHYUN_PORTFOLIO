@@ -15,7 +15,9 @@ import { HOUSE_POSITIONS } from "@/components/3d/constants";
 
 
 export function Interface() {
-  const { activeSection, setActiveSection, setTargetPosition } = useGameStore();
+  const activeSection = useGameStore((state) => state.activeSection);
+  const setActiveSection = useGameStore((state) => state.setActiveSection);
+  const setTargetPosition = useGameStore((state) => state.setTargetPosition);
 
   const handleClose = () => {
     if (activeSection) {

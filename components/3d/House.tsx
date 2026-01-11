@@ -5,18 +5,20 @@ import { useGameStore } from "@/store/gameStore";
 import * as THREE from "three";
 import { COLORS } from "@/constants/colors";
 
-interface HouseProps {
+interface IHouseProps {
   position: [number, number, number];
   label: string;
   section: string;
 }
 
-export function House({ position, label, section }: HouseProps) {
+export function House({ position, label, section }: IHouseProps) {
   const doorRef = useRef<THREE.Mesh>(null);
   const [hovered, setHovered] = useState(false);
   const [houseHovered, setHouseHovered] = useState(false);
 
-  const { activeSection, nearbySection, setTargetPosition } = useGameStore();
+  const activeSection = useGameStore((state) => state.activeSection);
+  const nearbySection = useGameStore((state) => state.nearbySection);
+  const setTargetPosition = useGameStore((state) => state.setTargetPosition);
 
   const isActive = activeSection === section || nearbySection === section;
   const isAnyHovered = hovered || houseHovered;
