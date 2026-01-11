@@ -68,10 +68,12 @@ export function Scene() {
           <Stars radius={150} depth={150} count={25000} factor={8} saturation={0} fade speed={1} />
           <Stars radius={100} depth={100} count={15000} factor={5} saturation={0} fade speed={0.5} />
           <Stars radius={50} depth={50} count={8000} factor={3} saturation={0} fade speed={0.3} />
-          <Sparkles count={1500} scale={60} size={3} speed={0.3} opacity={0.8} color={COLORS.primary.cyan} />
-          <Sparkles count={1000} scale={50} size={2} speed={0.5} opacity={0.6} color={COLORS.primary.skyBlue} />
-          <Sparkles count={600} scale={40} size={1.5} speed={0.2} opacity={0.5} color={COLORS.white.base} />
-          <Sparkles count={400} scale={30} size={1} speed={0.4} opacity={0.4} color={COLORS.primary.cyan} />
+          <Sparkles count={5000} scale={80} size={4} speed={0.3} opacity={0.9} color={COLORS.primary.cyan} />
+          <Sparkles count={4000} scale={70} size={3} speed={0.4} opacity={0.8} color={COLORS.primary.skyBlue} />
+          <Sparkles count={3500} scale={60} size={2.5} speed={0.5} opacity={0.7} color={COLORS.white.base} />
+          <Sparkles count={3000} scale={50} size={2} speed={0.3} opacity={0.6} color={COLORS.primary.cyan} />
+          <Sparkles count={2500} scale={40} size={1.5} speed={0.4} opacity={0.5} color={COLORS.primary.skyBlue} />
+          <Sparkles count={2000} scale={30} size={1} speed={0.2} opacity={0.4} color={COLORS.white.base} />
           <OrbitControls makeDefault enablePan={false} maxPolarAngle={Math.PI / 2} minDistance={5} maxDistance={20} />
         </Suspense>
       </Canvas>
