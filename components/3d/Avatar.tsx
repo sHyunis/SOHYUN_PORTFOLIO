@@ -152,7 +152,9 @@ export function Avatar() {
 
 
     if (controls) {
-        controls.target.lerp(position.current, 0.1);
+        // Offset the target slightly above the avatar to push the avatar down in the view
+        const targetOffset = new THREE.Vector3(position.current.x, position.current.y + 1.5, position.current.z);
+        controls.target.lerp(targetOffset, 0.1);
         controls.update();
     }
 

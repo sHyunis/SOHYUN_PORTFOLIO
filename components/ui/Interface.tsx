@@ -78,6 +78,34 @@ export function Interface() {
           </motion.div>
         )}
       </AnimatePresence>
+      {/* Navigation Menu (Quick Links) */}
+      {!activeSection && (
+        <div className="fixed top-6 right-6 z-50 flex flex-col items-end gap-2">
+          <div className="bg-black/40 backdrop-blur-md border border-white/10 rounded-2xl p-2 flex flex-col gap-1">
+            {[
+              { id: "about", label: "About" },
+              { id: "work", label: "Experience" },
+              { id: "projects", label: "Projects" },
+              { id: "skills", label: "Skills" },
+              { id: "guestbook", label: "Guestbook" },
+              { id: "contact", label: "Contact" },
+            ].map((item) => (
+              <button
+                key={item.id}
+                onClick={() => {
+                  const pos = HOUSE_POSITIONS[item.id as keyof typeof HOUSE_POSITIONS];
+                  if (pos) {
+                    setTargetPosition([pos[0], 0, pos[2] + 1.5]);
+                  }
+                }}
+                className="px-4 py-2 rounded-xl text-sm font-medium text-white/70 hover:text-white hover:bg-white/10 transition-all text-right whitespace-nowrap"
+              >
+                {item.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
     </>
   );
 }

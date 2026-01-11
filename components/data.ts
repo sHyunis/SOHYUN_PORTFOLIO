@@ -2,6 +2,8 @@ export const PROFILE = {
   name: "정소현",
   role: "Frontend Developer",
   email: "gkalice0751@gmail.com",
+  avatar: "/images/profile.png",
+  about: "끊임없는 학습과 성장으로 문제를 해결하며, 꾸준함과 책임감을 바탕으로 함께 하고 싶은 개발자입니다.",
   links: {
     linkedin: "https://www.linkedin.com/in/%EC%86%8C%ED%98%84-%EC%A0%95-100448322/",
     velog: "https://velog.io/@alice0751/posts",
@@ -158,6 +160,7 @@ export const PROJECTS = [
     period: "2024.10 ~ 2024.11 (5 weeks)",
     role: "Frontend Developer",
     description: "모바일 청첩장 커스텀 제작 서비스",
+    image: "/images/projects/dreamCardMy.png",
     link: "https://www.dream-card.co.kr",
     tech: ["Next.js", "Zustand", "TypeScript", "TanStack Query", "React Hook Form", "Tailwind CSS", "Supabase"],
     features: [
@@ -181,6 +184,7 @@ export const PROJECTS = [
     period: "2024.10.10 ~ 2024.10.16 (1주)",
     role: "Frontend Developer",
     description: "플레이리스트를 한번에 청취, 추천, 소통이 가능한 음악 커뮤니티 사이트",
+    image: "/images/projects/poketifyMainPage.png",
     link: "https://poketify.vercel.app",
     tech: ["Next.js", "TypeScript", "Tailwind CSS", "Zustand", "TanStack Query", "Supabase", "Spotify API"],
     features: [
@@ -195,6 +199,7 @@ export const PROJECTS = [
     period: "2024.09.11 ~ 2024.09.23 (11일)",
     role: "Frontend Developer",
     description: "공연을 공유하고 검색할 수 있는 페이지",
+    image: "/images/projects/curtainCallMainPage.png",
     link: "https://github.com/dev-rjw/outsourcing-project",
     tech: ["React", "Zustand", "TanStack Query", "Styled Components", "Kopis API", "Kakao Map"],
     features: [
@@ -211,6 +216,7 @@ export const PROJECTS = [
     period: "2024.08.28 ~ 2024.09.04 (1주)",
     role: "Frontend Developer",
     description: "유저들이 공유한 요리 레시피 기록을 한 눈에 볼 수 있는 뉴스피드 사이트",
+    image: "/images/projects/yummyyummyMainPage.png",
     link: "https://yummy-yummy-pi.vercel.app",
     tech: ["React", "Styled Components", "React Router", "Supabase"],
     features: [
@@ -224,6 +230,7 @@ export const PROJECTS = [
     period: "2024.09.09 ~ 2024.09.11 (3일)",
     role: "개인 프로젝트",
     description: "MBTI 테스트로 나를 알아보고 타인과 공유하는 사이트",
+    image: "/images/projects/WhoamITest.png",
     link: "https://whoami-mbtitest.vercel.app/",
     tech: ["React", "Styled Components", "React Router", "Supabase"],
     features: [
@@ -239,6 +246,7 @@ export const PROJECTS = [
     period: "2024.08.28 ~ 2024.09.04 (1주)",
     role: "Frontend Developer",
     description: "영화 검색 사이트의 기본 기능을 담은 커뮤니티 기반 영화 정보 사이트",
+    image: "/images/projects/MoviewMainPage.png",
     link: "https://moview-phi.vercel.app/index.html",
     tech: ["JavaScript", "HTML", "CSS", "TMDB API"],
     features: [
