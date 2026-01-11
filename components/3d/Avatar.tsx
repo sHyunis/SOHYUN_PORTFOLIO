@@ -26,16 +26,7 @@ export function Avatar() {
   const { position, direction } = useAvatarMovement(groupRef, movement);
   const isMoving = direction.current.length() > 0;
 
-  useAvatarAnimation(
-    groupRef,
-    {
-      leftArm: leftArmRef,
-      rightArm: rightArmRef,
-      leftLeg: leftLegRef,
-      rightLeg: rightLegRef,
-    },
-    isMoving
-  );
+  useAvatarAnimation(groupRef, leftArmRef, rightArmRef, leftLegRef, rightLegRef, isMoving);
 
   useCameraControl(position.current);
   useNearbySection(position.current);

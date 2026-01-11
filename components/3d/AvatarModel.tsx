@@ -1,12 +1,12 @@
-import { forwardRef } from "react";
+import { forwardRef, RefObject } from "react";
 import * as THREE from "three";
 import { COLORS } from "@/constants/colors";
 
 interface AvatarModelProps {
-  leftArmRef: React.RefObject<THREE.Mesh | null>;
-  rightArmRef: React.RefObject<THREE.Mesh | null>;
-  leftLegRef: React.RefObject<THREE.Mesh | null>;
-  rightLegRef: React.RefObject<THREE.Mesh | null>;
+  leftArmRef:RefObject<THREE.Mesh | null>;
+  rightArmRef: RefObject<THREE.Mesh | null>;
+  leftLegRef: RefObject<THREE.Mesh | null>;
+  rightLegRef: RefObject<THREE.Mesh | null>;
 }
 
 export const AvatarModel = forwardRef<THREE.Group | null, AvatarModelProps>(

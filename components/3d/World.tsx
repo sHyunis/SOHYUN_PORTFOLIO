@@ -1,3 +1,4 @@
+import { ThreeEvent } from "@react-three/fiber";
 import { useGameStore } from "@/store/gameStore";
 import { HOUSE_POSITIONS } from "./constants";
 import { COLORS } from "@/constants/colors";
@@ -15,7 +16,7 @@ const HOUSES = [
 export function World() {
   const { setTargetPosition } = useGameStore();
 
-  const handleGroundClick = (e: any) => {
+  const handleGroundClick = (e: ThreeEvent<MouseEvent>) => {
     e.stopPropagation();
     setTargetPosition([e.point.x, 0, e.point.z]);
   };

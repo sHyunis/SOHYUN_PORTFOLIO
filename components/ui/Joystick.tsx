@@ -14,13 +14,8 @@ export function Joystick() {
   const maxDistance = 40; // Maximum distance from center
 
   useEffect(() => {
-    if (!isDragging) {
-      setPosition({ x: 0, y: 0 });
-      setJoystickInput({ x: 0, y: 0 });
-      return;
-    }
-
     const handleMove = (clientX: number, clientY: number) => {
+      if (!isDragging) return;
       if (!containerRef.current) return;
 
       const rect = containerRef.current.getBoundingClientRect();
@@ -70,6 +65,11 @@ export function Joystick() {
       window.removeEventListener("mouseup", handleEnd);
       window.removeEventListener("touchmove", handleTouchMove);
       window.removeEventListener("touchend", handleEnd);
+
+      if (!isDragging) {
+        setPosition({ x: 0, y: 0 });
+        setJoystickInput({ x: 0, y: 0 });
+      }
     };
   }, [isDragging, setJoystickInput]);
 

@@ -23,12 +23,9 @@ export function useKeyboardControls(isActive: boolean, onKeyPress?: () => void) 
   });
 
   useEffect(() => {
-    if (!isActive) {
-      setMovement({ forward: false, backward: false, left: false, right: false });
-      return;
-    }
-
     const handleKeyDown = (e: KeyboardEvent) => {
+      if (!isActive) return;
+
       const allKeys = Object.values(MOVEMENT_KEYS).flat();
 
       if (allKeys.includes(e.code)) {
@@ -70,6 +67,9 @@ export function useKeyboardControls(isActive: boolean, onKeyPress?: () => void) 
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
+      if (!isActive) {
+        setMovement({ forward: false, backward: false, left: false, right: false });
+      }
     };
   }, [isActive, onKeyPress]);
 

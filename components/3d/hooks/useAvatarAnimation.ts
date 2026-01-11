@@ -1,20 +1,15 @@
-import { useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
-
-interface AvatarParts {
-  leftArm: React.RefObject<THREE.Mesh | null>;
-  rightArm: React.RefObject<THREE.Mesh | null>;
-  leftLeg: React.RefObject<THREE.Mesh | null>;
-  rightLeg: React.RefObject<THREE.Mesh | null>;
-}
 
 const ANIMATION_SPEED = 10;
 const IDLE_ANIMATION_SPEED = 2;
 
 export function useAvatarAnimation(
   groupRef: React.RefObject<THREE.Group | null>,
-  parts: AvatarParts,
+  leftArmRef: React.RefObject<THREE.Mesh | null>,
+  rightArmRef: React.RefObject<THREE.Mesh | null>,
+  leftLegRef: React.RefObject<THREE.Mesh | null>,
+  rightLegRef: React.RefObject<THREE.Mesh | null>,
   isMoving: boolean
 ) {
   useFrame((state) => {
@@ -27,13 +22,18 @@ export function useAvatarAnimation(
     groupRef.current.rotation.x = 0;
     groupRef.current.rotation.z = 0;
 
-    if (parts.leftArm.current && parts.rightArm.current && parts.leftLeg.current && parts.rightLeg.current) {
+    const leftArmMesh = leftArmRef.current;
+    const rightArmMesh = rightArmRef.current;
+    const leftLegMesh = leftLegRef.current;
+    const rightLegMesh = rightLegRef.current;
+
+    if (leftArmMesh && rightArmMesh && leftLegMesh && rightLegMesh) {
       const swing = isMoving ? Math.sin(time * animSpeed) * 0.5 : Math.sin(time * IDLE_ANIMATION_SPEED) * 0.05;
 
-      parts.leftArm.current.rotation.x = swing;
-      parts.rightArm.current.rotation.x = -swing;
-      parts.leftLeg.current.rotation.x = -swing;
-      parts.rightLeg.current.rotation.x = swing;
+      leftArmMesh.rotation.x = swing;
+      rightArmMesh.rotation.x = -swing;
+      leftLegMesh.rotation.x = -swing;
+      rightLegMesh.rotation.x = swing;
     }
   });
 }

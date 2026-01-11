@@ -10,12 +10,16 @@ import { COLORS } from "@/constants/colors";
 function CameraAnimation() {
   const { camera } = useThree();
   const [hasAnimated, setHasAnimated] = useState(false);
-  const startTime = useRef(Date.now());
+  const startTime = useRef(0);
 
-  useFrame(() => {
+  useFrame((state) => {
     if (hasAnimated) return;
 
-    const elapsed = (Date.now() - startTime.current) / 1000;
+    if (startTime.current === 0) {
+      startTime.current = state.clock.getElapsedTime();
+    }
+
+    const elapsed = state.clock.getElapsedTime() - startTime.current;
     const duration = 3.5;
 
     if (elapsed < duration) {
@@ -27,8 +31,10 @@ function CameraAnimation() {
       const startZ = 100;
       const endZ = 10;
 
-      camera.position.y = startY + (endY - startY) * eased;
-      camera.position.z = startZ + (endZ - startZ) * eased;
+      const targetY = startY + (endY - startY) * eased;
+      const targetZ = startZ + (endZ - startZ) * eased;
+
+      camera.position.set(camera.position.x, targetY, targetZ);
       camera.lookAt(0, 0, 0);
     } else {
       setHasAnimated(true);
@@ -59,10 +65,12 @@ export function Scene() {
           <CameraAnimation />
           <World />
           <Avatar />
-          <Stars radius={150} depth={80} count={25000} factor={6} saturation={0} fade speed={1} />
-          <Stars radius={100} depth={60} count={15000} factor={4} saturation={0} fade speed={0.5} />
-          <Sparkles count={800} scale={20} size={3} speed={0.3} opacity={0.8} color={COLORS.primary.cyan} />
+          <Stars radius={150} depth={150} count={25000} factor={8} saturation={0} fade speed={1} />
+          <Stars radius={100} depth={100} count={15000} factor={5} saturation={0} fade speed={0.5} />
+          <Stars radius={50} depth={50} count={8000} factor={3} saturation={0} fade speed={0.3} />
+          <Sparkles count={800} scale={25} size={3} speed={0.3} opacity={0.8} color={COLORS.primary.cyan} />
           <Sparkles count={400} scale={15} size={1.5} speed={0.5} opacity={0.6} color={COLORS.primary.skyBlue} />
+          <Sparkles count={200} scale={8} size={1} speed={0.2} opacity={0.4} color={COLORS.white.base} />
           <OrbitControls makeDefault enablePan={false} maxPolarAngle={Math.PI / 2} minDistance={5} maxDistance={20} />
         </Suspense>
       </Canvas>

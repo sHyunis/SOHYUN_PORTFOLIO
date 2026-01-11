@@ -1,14 +1,19 @@
-import { useFrame, useThree } from "@react-three/fiber";
+import { useFrame, useThree, RootState } from "@react-three/fiber";
 import * as THREE from "three";
 import { useGameStore } from "@/store/gameStore";
 import { HOUSE_POSITIONS } from "../constants";
+
+interface OrbitControls {
+  target: THREE.Vector3;
+  update: () => void;
+}
 
 export function useCameraControl(avatarPosition: THREE.Vector3) {
   const { camera } = useThree();
   const { activeSection } = useGameStore();
 
-  useFrame((state) => {
-    const controls = (state.controls as any);
+  useFrame((state: RootState) => {
+    const controls = state.controls as OrbitControls | undefined;
 
     if (activeSection) {
       const housePos = HOUSE_POSITIONS[activeSection as keyof typeof HOUSE_POSITIONS];
