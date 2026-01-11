@@ -149,10 +149,10 @@ export function Avatar() {
     for (const [key, pos] of Object.entries(HOUSE_POSITIONS)) {
       const housePos = new THREE.Vector3(pos[0], 0, pos[2]);
       const dist = position.current.distanceTo(housePos);
-      
+
       if (dist < threshold) {
         nearest = key;
-        if (dist < 3 && !useGameStore.getState().activeSection && !targetPosition) {
+        if (dist < 2.5 && !useGameStore.getState().activeSection && !targetPosition) {
              // eslint-disable-next-line @typescript-eslint/no-explicit-any
              useGameStore.getState().setActiveSection(key as any);
         }

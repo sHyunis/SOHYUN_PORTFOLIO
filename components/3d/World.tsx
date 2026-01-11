@@ -11,8 +11,9 @@ import { COLORS } from "@/constants/colors";
 function House({ position, color, label, section }: { position: [number, number, number], color: string, label: string, section: any }) {
   const { setActiveSection, activeSection, nearbySection } = useGameStore();
   const [hovered, setHover] = useState(false);
-  useCursor(hovered);
-  
+  const [houseHovered, setHouseHover] = useState(false);
+  useCursor(hovered || houseHovered);
+
   const doorRef = useRef<THREE.Mesh>(null);
   const isActive = activeSection === section || nearbySection === section;
 
@@ -32,30 +33,47 @@ function House({ position, color, label, section }: { position: [number, number,
           const targetZ = position[2] + 1.5;
           useGameStore.getState().setTargetPosition([position[0], 0, targetZ]);
         }}
-        onPointerOver={() => setHover(true)}
-        onPointerOut={() => setHover(false)}
+        onPointerOver={() => setHouseHover(true)}
+        onPointerOut={() => setHouseHover(false)}
       >
         <boxGeometry args={[3, 3, 3]} />
         <meshStandardMaterial
-          color={hovered ? COLORS.primary.skyBlue : COLORS.background.slate}
+          color={COLORS.background.slate}
           roughness={0.1}
           metalness={0.8}
-          emissive={hovered ? COLORS.primary.skyBlueEmissive : COLORS.neutral.black}
-          emissiveIntensity={0.2}
+          transparent
+          opacity={0.7}
         />
       </mesh>
-      
-      <mesh position={[0, 3.75, 0]} rotation={[0, Math.PI / 4, 0]}>
+
+      <mesh
+        position={[0, 3.75, 0]}
+        rotation={[0, Math.PI / 4, 0]}
+        onClick={(e) => {
+          e.stopPropagation();
+          const targetZ = position[2] + 1.5;
+          useGameStore.getState().setTargetPosition([position[0], 0, targetZ]);
+        }}
+        onPointerOver={() => setHouseHover(true)}
+        onPointerOut={() => setHouseHover(false)}
+      >
         <coneGeometry args={[2.5, 1.5, 4]} />
         <meshStandardMaterial
-          color={hovered ? COLORS.primary.skyBlue : COLORS.background.slateDark}
+          color={COLORS.background.slateDark}
           roughness={0.1}
           metalness={0.9}
+          transparent
+          opacity={0.7}
         />
       </mesh>
 
       <group position={[0, 1, 1.51]}>
-        <mesh ref={doorRef} position={[0.5, 0, 0]}>
+        <mesh
+          ref={doorRef}
+          position={[0.5, 0, 0]}
+          onPointerOver={() => setHover(true)}
+          onPointerOut={() => setHover(false)}
+        >
            <boxGeometry args={[1, 2, 0.1]} />
            <meshStandardMaterial
              color={COLORS.neutral.black}
@@ -68,15 +86,17 @@ function House({ position, color, label, section }: { position: [number, number,
 
       <Text
         position={[0, 5.5, 0]}
-        fontSize={0.6}
-        color={COLORS.primary.cyan}
+        fontSize={0.45}
+        color={COLORS.white.base}
         anchorX="center"
         anchorY="middle"
-        letterSpacing={0.05}
-        outlineWidth={0.02}
+        letterSpacing={0.2}
+        outlineWidth={0.03}
         outlineColor={COLORS.neutral.black}
+        outlineOpacity={1}
+        fillOpacity={1}
       >
-        {label}
+        {label.toUpperCase()}
       </Text>
     </group>
   );

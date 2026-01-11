@@ -40,8 +40,7 @@ export function Interface() {
       </div>
 
       <div className="fixed bottom-8 left-1/2 -translate-x-1/2 text-white/50 text-sm pointer-events-none text-center">
-        <p className="mb-2">WASD to Move • Drag to Look • Scroll to Zoom</p>
-        <p className="text-xs opacity-50">Click ground to move</p>
+        <p className="text-xs opacity-50">클릭해서 움직여보세요.</p>
       </div>
 
       {/* Modals */}

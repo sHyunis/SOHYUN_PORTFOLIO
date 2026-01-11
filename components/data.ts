@@ -8,7 +8,7 @@ export const PROFILE = {
     linkedin: "https://www.linkedin.com/in/%EC%86%8C%ED%98%84-%EC%A0%95-100448322/",
     velog: "https://velog.io/@alice0751/posts",
     github: "https://github.com/sHyunis",
-    portfolio: "#",
+    
   },
   philosophy: [
     "기술을 넘어 제품의 가치를 만드는 프론트엔드 개발자 정소현입니다.",
