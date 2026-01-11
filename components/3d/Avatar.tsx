@@ -21,7 +21,7 @@ export function Avatar() {
   const leftLegRef = useRef<THREE.Mesh>(null);
   const rightLegRef = useRef<THREE.Mesh>(null);
 
-  const { targetPosition, setTargetPosition, activeSection } = useGameStore();
+  const { targetPosition, setTargetPosition, activeSection, joystickInput } = useGameStore();
   const zoom = useRef(1);
 
   useEffect(() => {
@@ -102,10 +102,17 @@ export function Avatar() {
     const speed = 5;
     direction.current.set(0, 0, 0);
 
+    // Keyboard input
     if (movement.forward) direction.current.z -= 1;
     if (movement.backward) direction.current.z += 1;
     if (movement.left) direction.current.x -= 1;
     if (movement.right) direction.current.x += 1;
+
+    // Joystick input
+    if (joystickInput && (joystickInput.x !== 0 || joystickInput.y !== 0)) {
+      direction.current.x += joystickInput.x;
+      direction.current.z += joystickInput.y;
+    }
 
     if (targetPosition && direction.current.length() === 0) {
       const targetVec = new THREE.Vector3(targetPosition[0], 0, targetPosition[2]);

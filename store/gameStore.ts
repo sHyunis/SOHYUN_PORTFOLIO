@@ -11,6 +11,8 @@ interface GameState {
   setNearbySection: (section: ActiveSection) => void;
   avatarPosition: [number, number, number];
   setAvatarPosition: (position: [number, number, number]) => void;
+  joystickInput: { x: number; y: number };
+  setJoystickInput: (input: { x: number; y: number }) => void;
 }
 
 export const useGameStore = create<GameState>((set) => ({
@@ -22,4 +24,6 @@ export const useGameStore = create<GameState>((set) => ({
   setNearbySection: (section) => set({ nearbySection: section }),
   avatarPosition: [0, 0, 0],
   setAvatarPosition: (position) => set({ avatarPosition: position }),
+  joystickInput: { x: 0, y: 0 },
+  setJoystickInput: (input) => set({ joystickInput: input }),
 }));

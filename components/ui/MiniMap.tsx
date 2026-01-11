@@ -37,7 +37,7 @@ export function MiniMap() {
   };
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 pointer-events-auto">
+    <div className="fixed top-6 right-6 z-50 pointer-events-auto">
       <div className="bg-black/60 backdrop-blur-md border border-white/20 rounded-2xl p-3">
         <div className="text-white/50 text-xs mb-2 text-center font-mono">MAP</div>
         <svg width="120" height="120" className="relative">

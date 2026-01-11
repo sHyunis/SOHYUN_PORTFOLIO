@@ -74,17 +74,12 @@ export function Projects() {
               <div className="space-y-2">
                 <h4 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-3">Key Features</h4>
                 <ul className="space-y-2">
-                  {project.features.slice(0, 4).map((feature, fIndex) => (
+                  {project.features.map((feature, fIndex) => (
                     <li key={fIndex} className="text-sm text-gray-500 flex items-start">
                       <span className="mr-2 mt-1.5 w-1 h-1 rounded-full bg-accent flex-shrink-0" />
                       {feature}
                     </li>
                   ))}
-                  {project.features.length > 4 && (
-                    <li className="text-sm text-gray-600 italic">
-                      + {project.features.length - 4} more features
-                    </li>
-                  )}
                 </ul>
               </div>
             </motion.div>

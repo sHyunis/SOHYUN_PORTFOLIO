@@ -9,6 +9,7 @@ import { Philosophy } from "@/components/about/Philosophy";
 import { Footer } from "@/components/layout/Footer";
 import { Guestbook } from "@/components/guestbook/Guestbook";
 import { MiniMap } from "@/components/ui/MiniMap";
+import { Joystick } from "@/components/ui/Joystick";
 import { HOUSE_POSITIONS } from "@/components/3d/constants";
 
 
@@ -81,6 +82,9 @@ export function Interface() {
       </AnimatePresence>
       {/* MiniMap */}
       {!activeSection && <MiniMap />}
+
+      {/* Joystick */}
+      <Joystick />
     </>
   );
 }
