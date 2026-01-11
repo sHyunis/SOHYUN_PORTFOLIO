@@ -19,8 +19,8 @@ export function MiniMap() {
   // Convert 3D world coordinates to 2D minimap coordinates
   const worldToMap = (x: number, z: number) => {
     // World bounds: roughly -10 to 10 for x, -10 to 14 for z
-    const mapWidth = 120;
-    const mapHeight = 120;
+    const mapWidth = 90;
+    const mapHeight = 90;
 
     // Scale and center
     const mapX = ((x + 10) / 20) * mapWidth;
@@ -38,19 +38,19 @@ export function MiniMap() {
 
   return (
     <div className="fixed top-6 right-6 z-50 pointer-events-auto">
-      <div className="bg-black/60 backdrop-blur-md border border-white/20 rounded-2xl p-3">
-        <div className="text-white/50 text-xs mb-2 text-center font-mono">MAP</div>
-        <svg width="120" height="120" className="relative">
+      <div className="bg-black/60 backdrop-blur-md border border-white/20 rounded-2xl p-2">
+        <div className="text-white/50 text-[10px] mb-1 text-center font-mono">MAP</div>
+        <svg width="90" height="90" className="relative">
           {/* Grid background */}
           <defs>
-            <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
-              <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="0.5"/>
+            <pattern id="grid" width="15" height="15" patternUnits="userSpaceOnUse">
+              <path d="M 15 0 L 0 0 0 15" fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="0.5"/>
             </pattern>
           </defs>
-          <rect width="120" height="120" fill="url(#grid)" />
+          <rect width="90" height="90" fill="url(#grid)" />
 
           {/* Center marker */}
-          <circle cx="60" cy="60" r="1" fill="white" opacity="0.3" />
+          <circle cx="45" cy="45" r="0.8" fill="white" opacity="0.3" />
 
           {/* House positions */}
           {SECTIONS.map((section) => {
@@ -65,18 +65,18 @@ export function MiniMap() {
                 <circle
                   cx={mapPos.x}
                   cy={mapPos.y}
-                  r={isNearby ? 6 : 4}
+                  r={isNearby ? 5 : 3}
                   fill={section.color}
                   opacity={isNearby ? 1 : 0.6}
                   className="cursor-pointer transition-all hover:opacity-100"
                   onClick={() => handleSectionClick(section.id)}
-                  style={{ filter: isNearby ? 'drop-shadow(0 0 4px currentColor)' : 'none' }}
+                  style={{ filter: isNearby ? 'drop-shadow(0 0 3px currentColor)' : 'none' }}
                 />
                 {isNearby && (
                   <text
                     x={mapPos.x}
-                    y={mapPos.y - 12}
-                    fontSize="8"
+                    y={mapPos.y - 9}
+                    fontSize="7"
                     fill="white"
                     textAnchor="middle"
                     className="font-mono"
@@ -94,17 +94,17 @@ export function MiniMap() {
               <circle
                 cx={worldToMap(avatarPosition[0], avatarPosition[2]).x}
                 cy={worldToMap(avatarPosition[0], avatarPosition[2]).y}
-                r="3"
+                r="2.5"
                 fill="#fff"
                 className="animate-pulse"
               />
               <circle
                 cx={worldToMap(avatarPosition[0], avatarPosition[2]).x}
                 cy={worldToMap(avatarPosition[0], avatarPosition[2]).y}
-                r="5"
+                r="4"
                 fill="none"
                 stroke="#fff"
-                strokeWidth="1"
+                strokeWidth="0.8"
                 opacity="0.5"
               />
             </g>
