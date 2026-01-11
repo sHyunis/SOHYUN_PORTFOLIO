@@ -83,7 +83,6 @@ export function Avatar() {
   useFrame((state, delta) => {
     if (!group.current) return;
 
-    // Camera Logic
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const controls = (state.controls as any);
 
@@ -102,13 +101,11 @@ export function Avatar() {
     const speed = 5;
     direction.current.set(0, 0, 0);
 
-    // Keyboard input
     if (movement.forward) direction.current.z -= 1;
     if (movement.backward) direction.current.z += 1;
     if (movement.left) direction.current.x -= 1;
     if (movement.right) direction.current.x += 1;
 
-    // Joystick input
     if (joystickInput && (joystickInput.x !== 0 || joystickInput.y !== 0)) {
       direction.current.x += joystickInput.x;
       direction.current.z += joystickInput.y;
@@ -136,7 +133,6 @@ export function Avatar() {
 
     group.current.position.copy(position.current);
 
-    // Update avatar position in store
     useGameStore.getState().setAvatarPosition([
       position.current.x,
       position.current.y,
@@ -167,7 +163,6 @@ export function Avatar() {
 
 
     if (controls) {
-        // Offset the target slightly above the avatar to push the avatar down in the view
         const targetOffset = new THREE.Vector3(position.current.x, position.current.y + 1.5, position.current.z);
         controls.target.lerp(targetOffset, 0.1);
         controls.update();

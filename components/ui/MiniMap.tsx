@@ -3,6 +3,7 @@
 import { useGameStore } from "@/store/gameStore";
 import { HOUSE_POSITIONS } from "@/components/3d/constants";
 import { COLORS } from "@/constants/colors";
+import { motion } from "framer-motion";
 
 const SECTIONS = [
   { id: "about", label: "About", color: COLORS.minimap.about },
@@ -16,13 +17,10 @@ const SECTIONS = [
 export function MiniMap() {
   const { avatarPosition, setTargetPosition, nearbySection } = useGameStore();
 
-  // Convert 3D world coordinates to 2D minimap coordinates
   const worldToMap = (x: number, z: number) => {
-    // World bounds: roughly -10 to 10 for x, -10 to 14 for z
     const mapWidth = 90;
     const mapHeight = 90;
 
-    // Scale and center
     const mapX = ((x + 10) / 20) * mapWidth;
     const mapZ = ((z + 10) / 24) * mapHeight;
 
@@ -37,11 +35,15 @@ export function MiniMap() {
   };
 
   return (
-    <div className="fixed top-6 right-6 z-50 pointer-events-auto">
+    <motion.div
+      initial={{ opacity: 0, scale: 0.8 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.8, delay: 2.8 }}
+      className="fixed top-6 right-6 z-50 pointer-events-auto"
+    >
       <div className="bg-black/60 backdrop-blur-md border border-white/20 rounded-2xl p-2">
         <div className="text-white/50 text-[10px] mb-1 text-center font-mono">MAP</div>
         <svg width="90" height="90" className="relative">
-          {/* Grid background */}
           <defs>
             <pattern id="grid" width="15" height="15" patternUnits="userSpaceOnUse">
               <path d="M 15 0 L 0 0 0 15" fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="0.5"/>
@@ -49,10 +51,8 @@ export function MiniMap() {
           </defs>
           <rect width="90" height="90" fill="url(#grid)" />
 
-          {/* Center marker */}
           <circle cx="45" cy="45" r="0.8" fill="white" opacity="0.3" />
 
-          {/* House positions */}
           {SECTIONS.map((section) => {
             const pos = HOUSE_POSITIONS[section.id as keyof typeof HOUSE_POSITIONS];
             if (!pos) return null;
@@ -88,7 +88,6 @@ export function MiniMap() {
             );
           })}
 
-          {/* Avatar position */}
           {avatarPosition && (
             <g>
               <circle
@@ -111,6 +110,6 @@ export function MiniMap() {
           )}
         </svg>
       </div>
-    </div>
+    </motion.div>
   );
 }

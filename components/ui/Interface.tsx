@@ -29,21 +29,29 @@ export function Interface() {
 
   return (
     <>
-      {/* HUD */}
-      <div className="fixed top-6 left-6 z-50 pointer-events-none">
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 1, delay: 2.5 }}
+        className="fixed top-6 left-6 z-50 pointer-events-none"
+      >
         <h1 className="text-4xl font-bold mb-2 tracking-tighter text-gradient-space text-space-glow">
           Jung Sohyun
         </h1>
         <p className="text-cyan-400/80 font-mono tracking-widest uppercase text-sm">
           Frontend Developer
         </p>
-      </div>
+      </motion.div>
 
-      <div className="fixed bottom-8 left-1/2 -translate-x-1/2 text-white/50 text-sm pointer-events-none text-center">
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1, delay: 3 }}
+        className="fixed bottom-8 left-1/2 -translate-x-1/2 text-white/50 text-sm pointer-events-none text-center"
+      >
         <p className="text-xs opacity-50">클릭해서 움직여보세요.</p>
-      </div>
+      </motion.div>
 
-      {/* Modals */}
       <AnimatePresence>
         {activeSection && (
           <motion.div
@@ -79,10 +87,7 @@ export function Interface() {
           </motion.div>
         )}
       </AnimatePresence>
-      {/* MiniMap */}
       {!activeSection && <MiniMap />}
-
-      {/* Joystick */}
       <Joystick />
     </>
   );

@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useGameStore } from "@/store/gameStore";
 import { COLORS } from "@/constants/colors";
+import { motion } from "framer-motion";
 
 export function Joystick() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -39,7 +40,6 @@ export function Joystick() {
 
       setPosition({ x: deltaX, y: deltaY });
 
-      // Normalize for game input (-1 to 1)
       const normalizedX = deltaX / maxDistance;
       const normalizedY = deltaY / maxDistance;
 
@@ -82,20 +82,22 @@ export function Joystick() {
   if (activeSection) return null;
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 pointer-events-auto">
+    <motion.div
+      initial={{ opacity: 0, scale: 0.8 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.8, delay: 3 }}
+      className="fixed bottom-6 right-6 z-50 pointer-events-auto"
+    >
       <div
         ref={containerRef}
         className="relative w-32 h-32 bg-black/40 backdrop-blur-md border border-white/20 rounded-full flex items-center justify-center"
         onMouseDown={handleStart}
         onTouchStart={handleStart}
       >
-        {/* Base circle */}
         <div className="absolute inset-4 border-2 border-white/20 rounded-full" />
 
-        {/* Center dot */}
         <div className="absolute w-2 h-2 bg-white/30 rounded-full" />
 
-        {/* Direction indicators */}
         <div className="absolute top-2 left-1/2 -translate-x-1/2">
           <div className="w-6 h-6 flex items-center justify-center text-white/40 text-xs">▲</div>
         </div>
@@ -109,7 +111,6 @@ export function Joystick() {
           <div className="w-6 h-6 flex items-center justify-center text-white/40 text-xs">▶</div>
         </div>
 
-        {/* Joystick handle */}
         <div
           className="absolute w-12 h-12 rounded-full transition-all"
           style={{
@@ -125,6 +126,6 @@ export function Joystick() {
           <div className="absolute inset-2 border-2 border-white/30 rounded-full" />
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
