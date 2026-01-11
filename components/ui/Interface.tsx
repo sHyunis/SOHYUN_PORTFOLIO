@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useGameStore } from "@/store/gameStore";
 import { AnimatePresence, motion } from "framer-motion";
 import { WorkExperience } from "@/components/experience/WorkExperience";
@@ -38,13 +37,12 @@ export function Interface() {
         transition={{ duration: 1, delay: 1.5 }}
         className="fixed top-6 left-6 z-50 pointer-events-none"
       >
-        <Image
-          src="/images/logo.png"
-          alt="Jung Sohyun - Frontend Developer"
-          width={200}
-          height={60}
-          priority
-        />
+        <h1 className="text-4xl font-bold mb-2 tracking-tighter text-gradient-space text-space-glow">
+          Jung Sohyun
+        </h1>
+        <p className="text-cyan-400/80 font-mono tracking-widest uppercase text-sm">
+          Frontend Developer
+        </p>
       </motion.div>
 
       <motion.div
