@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Image from "next/image";
 import { PROJECTS } from "@/components/data";
 import { ArrowUpRight } from "lucide-react";
 
@@ -27,6 +28,16 @@ export function Projects() {
               viewport={{ once: true }}
               className="group relative bg-card rounded-3xl p-8 hover:bg-white/5 transition-colors duration-500 border border-white/5"
             >
+              {project.image && (
+                <div className="relative aspect-video mb-8 overflow-hidden rounded-2xl border border-white/10">
+                  <Image 
+                    src={project.image} 
+                    alt={''}
+                    fill
+                    className="object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                </div>
+              )}
               <div className="flex justify-between items-start mb-6">
                 <div>
                   <h3 className="text-2xl font-bold text-white mb-2">

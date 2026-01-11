@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Portfolio | Creative Developer",
-  description: "A premium portfolio showcasing creative development work.",
+  title: "정소현 Portfolio | Frontend Developer",
+  description: "기술을 넘어 제품의 가치를 만드는 프론트엔드 개발자 정소현",
 };
 
 export default function RootLayout({
@@ -24,7 +24,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="ko">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}
       >

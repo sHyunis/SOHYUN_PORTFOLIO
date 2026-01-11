@@ -1,12 +1,29 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Image from "next/image";
 import { PROFILE } from "@/components/data";
 
 export function Philosophy() {
   return (
     <div className="py-10">
       <div className="max-w-4xl mx-auto space-y-12">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.8 }}
+          viewport={{ once: true }}
+          className="flex justify-center mb-16"
+        >
+          <div className="relative w-48 h-48 md:w-64 md:h-64 rounded-full overflow-hidden border-4 border-white/10 shadow-2xl">
+            <Image
+              src={PROFILE.avatar}
+              alt={PROFILE.name}
+              fill
+              className="object-cover"
+            />
+          </div>
+        </motion.div>
         {PROFILE.philosophy.map((text, index) => (
           <PhilosophyItem key={index} text={text} index={index} />
         ))}
