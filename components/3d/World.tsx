@@ -28,8 +28,7 @@ function House({ position, color, label, section }: { position: [number, number,
         position={[0, 1.5, 0]}
         onClick={(e) => {
           e.stopPropagation();
-          // Walk to the front of the house instead of opening immediately
-          const targetZ = position[2] + 1.5; // Stand closer to the door
+          const targetZ = position[2] + 1.5;
           useGameStore.getState().setTargetPosition([position[0], 0, targetZ]);
         }}
         onPointerOver={() => setHover(true)}

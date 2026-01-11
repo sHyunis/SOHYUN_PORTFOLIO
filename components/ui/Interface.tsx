@@ -19,7 +19,6 @@ export function Interface() {
     if (activeSection) {
       const housePos = HOUSE_POSITIONS[activeSection as keyof typeof HOUSE_POSITIONS];
       if (housePos) {
-        // Move back to a safe distance (6 units) to avoid immediate re-trigger
         setTargetPosition([housePos[0], 0, housePos[2] + 6]);
       }
     }

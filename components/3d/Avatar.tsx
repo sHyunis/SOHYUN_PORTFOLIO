@@ -150,7 +150,7 @@ export function Avatar() {
       useGameStore.getState().setNearbySection(nearest as any);
     }
 
-    // Update OrbitControls target to follow avatar
+
     if (controls) {
         controls.target.lerp(position.current, 0.1);
         controls.update();
@@ -163,19 +163,17 @@ export function Avatar() {
     if (isMoving) {
       const targetRotationY = Math.atan2(direction.current.x, direction.current.z);
       
-      // Smooth rotation using Euler angles
       let diff = targetRotationY - group.current.rotation.y;
-      // Normalize angle difference to -PI to PI for shortest path turn
       while (diff > Math.PI) diff -= Math.PI * 2;
       while (diff < -Math.PI) diff += Math.PI * 2;
       
       group.current.rotation.y += diff * 0.2;
     }
 
-    // Walking bobbing
+
     group.current.position.y = Math.sin(time * (isMoving ? animSpeed : 2)) * 0.05;
     
-    // Force upright posture (fix for lying down issue)
+
     group.current.rotation.x = 0;
     group.current.rotation.z = 0;
 

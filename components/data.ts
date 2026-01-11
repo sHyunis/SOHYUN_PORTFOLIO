@@ -158,9 +158,13 @@ export const PROJECTS = [
     period: "2024.10 ~ 2024.11 (5 weeks)",
     role: "Frontend Developer",
     description: "모바일 청첩장 커스텀 제작 서비스",
-    link: "#", // User to provide URL
-    tech: ["Next.js", "Zustand", "TypeScript", "TanStack Query", "React Hook Form", "Tailwind CSS"],
+    link: "https://www.dream-card.co.kr",
+    tech: ["Next.js", "Zustand", "TypeScript", "TanStack Query", "React Hook Form", "Tailwind CSS", "Supabase"],
     features: [
+      "청첩장 메인 제작 페이지 - 글꼴 편집, 미리보기 적용",
+      "갤러리 편집, 대표사진 등록, 인사말 입력",
+      "마이페이지 - 전체 레이아웃, 제작 진척률, 공유하기",
+      "후기 조회 - 전체 레이아웃, 사진 모아보기, 무한 스크롤, 좋아요",
       "CPU 부하로 인한 프레임 드랍 개선 (Intersection Observer 도입)",
       "깊은 비교 및 정렬을 통한 제작 진척률 정확도 개선",
       "React Hook Form을 활용한 실시간 입력값 미리보기",
@@ -169,19 +173,79 @@ export const PROJECTS = [
       "Sharp와 WebP를 활용한 이미지 최적화",
       "TanStack Query의 낙관적 업데이트로 좋아요 버튼 반응 속도 개선",
       "Sentry를 활용한 실시간 에러 수집",
+      "반응형 페이지 적용",
+    ]
+  },
+  {
+    name: "Poketify",
+    period: "2024.10.10 ~ 2024.10.16 (1주)",
+    role: "Frontend Developer",
+    description: "플레이리스트를 한번에 청취, 추천, 소통이 가능한 음악 커뮤니티 사이트",
+    link: "https://poketify.vercel.app",
+    tech: ["Next.js", "TypeScript", "Tailwind CSS", "Zustand", "TanStack Query", "Supabase", "Spotify API"],
+    features: [
+      "음악 추천 페이지 - 추천 플레이리스트, 마이 플레이리스트 추가/삭제",
+      "플레이리스트 재생 기능",
+      "Spotify API 연동",
+      "반응형 페이지 적용",
     ]
   },
   {
     name: "커튼콜",
-    period: "2024.09.11 ~ 2024.09.23 (2 weeks)",
+    period: "2024.09.11 ~ 2024.09.23 (11일)",
     role: "Frontend Developer",
-    description: "공연 정보 및 예매 서비스",
-    link: "#", // User to provide URL
-    tech: ["React", "Zustand", "TanStack Query", "Styled Components"],
+    description: "공연을 공유하고 검색할 수 있는 페이지",
+    link: "https://github.com/dev-rjw/outsourcing-project",
+    tech: ["React", "Zustand", "TanStack Query", "Styled Components", "Kopis API", "Kakao Map"],
     features: [
+      "공연 정보 상세 페이지 - Kakao API 공연 위치 정보 표시",
+      "댓글 추가/삭제 기능",
+      "Kopis API 상세 페이지 정보 표시",
       "debounce를 활용한 실시간 곡 검색 최적화",
       "카카오 지도 API를 사용한 공연 장소 지도 표시",
       "TanStack Query를 활용한 상세페이지 댓글 CRUD 구현",
+    ]
+  },
+  {
+    name: "Yummy Yummy!",
+    period: "2024.08.28 ~ 2024.09.04 (1주)",
+    role: "Frontend Developer",
+    description: "유저들이 공유한 요리 레시피 기록을 한 눈에 볼 수 있는 뉴스피드 사이트",
+    link: "https://yummy-yummy-pi.vercel.app",
+    tech: ["React", "Styled Components", "React Router", "Supabase"],
+    features: [
+      "로그인, 회원가입 - 소셜 로그인, 이메일 회원가입/로그인",
+      "전체 디자인 담당",
+      "레시피 뉴스피드 구현",
+    ]
+  },
+  {
+    name: "WHOAMI",
+    period: "2024.09.09 ~ 2024.09.11 (3일)",
+    role: "개인 프로젝트",
+    description: "MBTI 테스트로 나를 알아보고 타인과 공유하는 사이트",
+    link: "https://whoami-mbtitest.vercel.app/",
+    tech: ["React", "Styled Components", "React Router", "Supabase"],
+    features: [
+      "메인 페이지 - 페이지 소개",
+      "로그인, 회원가입",
+      "마이페이지",
+      "테스트 페이지",
+      "결과 조회 페이지",
+    ]
+  },
+  {
+    name: "Moview",
+    period: "2024.08.28 ~ 2024.09.04 (1주)",
+    role: "Frontend Developer",
+    description: "영화 검색 사이트의 기본 기능을 담은 커뮤니티 기반 영화 정보 사이트",
+    link: "https://moview-phi.vercel.app/index.html",
+    tech: ["JavaScript", "HTML", "CSS", "TMDB API"],
+    features: [
+      "메인 홈 페이지",
+      "전체 디자인 담당",
+      "메뉴바 구현",
+      "상세 페이지 - 댓글 추가/삭제",
     ]
   }
 ];
