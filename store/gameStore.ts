@@ -11,6 +11,11 @@ interface GameState {
   setNearbySection: (section: TActiveSection) => void;
   joystickInput: { x: number; y: number };
   setJoystickInput: (input: { x: number; y: number }) => void;
+  isFalling: boolean;
+  setIsFalling: (falling: boolean) => void;
+  shouldReplayIntro: boolean;
+  triggerIntroReplay: () => void;
+  resetIntroReplay: () => void;
 }
 
 export const useGameStore = create<GameState>((set) => ({
@@ -22,4 +27,9 @@ export const useGameStore = create<GameState>((set) => ({
   setNearbySection: (section) => set({ nearbySection: section }),
   joystickInput: { x: 0, y: 0 },
   setJoystickInput: (input) => set({ joystickInput: input }),
+  isFalling: false,
+  setIsFalling: (falling) => set({ isFalling: falling }),
+  shouldReplayIntro: false,
+  triggerIntroReplay: () => set({ shouldReplayIntro: true }),
+  resetIntroReplay: () => set({ shouldReplayIntro: false }),
 }));

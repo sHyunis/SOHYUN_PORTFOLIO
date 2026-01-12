@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useState, useCallback } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { useGameStore } from "@/store/gameStore";
@@ -12,6 +12,10 @@ interface IMovementInput {
 }
 
 const MOVEMENT_SPEED = 5;
+const FLOOR_BOUNDARY = 18;
+const FALL_SPEED = 12;
+const FALL_ACCELERATION = 20;
+const RESPAWN_Y = -120;
 
 export function useAvatarMovement(
   groupRef: React.RefObject<THREE.Group | null>,
@@ -19,12 +23,74 @@ export function useAvatarMovement(
 ) {
   const position = useRef(new THREE.Vector3(0, 0, 6));
   const direction = useRef(new THREE.Vector3());
+  const isFalling = useRef(false);
+  const fallVelocity = useRef(0);
+  const fallRotation = useRef({ x: 0, z: 0 });
+  const [isRespawning, setIsRespawning] = useState(false);
+  const respawnTime = useRef(0);
+
+  const triggerRespawn = useCallback(() => {
+    setIsRespawning(true);
+    respawnTime.current = 0;
+  }, []);
 
   useFrame((state, delta) => {
     if (!groupRef.current || !movementRef.current) return;
 
     const { targetPosition, setTargetPosition, joystickInput } = useGameStore.getState();
     const movement = movementRef.current;
+
+    if (isRespawning) {
+      respawnTime.current += delta;
+      const progress = Math.min(respawnTime.current / 0.5, 1);
+      const scale = 1 + Math.sin(progress * Math.PI) * 0.3;
+      groupRef.current.scale.setScalar(scale);
+
+      if (progress >= 1) {
+        setIsRespawning(false);
+        groupRef.current.scale.setScalar(1);
+      }
+      return;
+    }
+
+    const isOutsideFloor =
+      Math.abs(position.current.x) > FLOOR_BOUNDARY ||
+      Math.abs(position.current.z) > FLOOR_BOUNDARY;
+
+    if (isOutsideFloor && !isFalling.current) {
+      isFalling.current = true;
+      fallVelocity.current = FALL_SPEED;
+      fallRotation.current = {
+        x: (Math.random() - 0.5) * 4,
+        z: (Math.random() - 0.5) * 4,
+      };
+      setTargetPosition(null);
+      useGameStore.getState().setIsFalling(true);
+    }
+
+    if (isFalling.current) {
+      fallVelocity.current += FALL_ACCELERATION * delta;
+      position.current.y -= fallVelocity.current * delta;
+
+      groupRef.current.rotation.x += fallRotation.current.x * delta;
+      groupRef.current.rotation.z += fallRotation.current.z * delta;
+
+      if (position.current.y < RESPAWN_Y) {
+        position.current.set(0, 0, 6);
+        groupRef.current.rotation.set(0, 0, 0);
+        isFalling.current = false;
+        fallVelocity.current = 0;
+        useGameStore.getState().setIsFalling(false);
+        useGameStore.getState().triggerIntroReplay();
+        triggerRespawn();
+      }
+
+      groupRef.current.position.copy(position.current);
+      avatarPosition.x = position.current.x;
+      avatarPosition.y = position.current.y;
+      avatarPosition.z = position.current.z;
+      return;
+    }
 
     direction.current.set(0, 0, 0);
 
@@ -34,19 +100,14 @@ export function useAvatarMovement(
     if (movement.right) direction.current.x += 1;
 
     if (joystickInput && (joystickInput.x !== 0 || joystickInput.y !== 0)) {
-      // 카메라의 전방 방향 (XZ 평면에 투영)
       const cameraDirection = new THREE.Vector3();
       state.camera.getWorldDirection(cameraDirection);
       cameraDirection.y = 0;
       cameraDirection.normalize();
 
-      // 카메라의 오른쪽 방향
       const cameraRight = new THREE.Vector3();
       cameraRight.crossVectors(cameraDirection, new THREE.Vector3(0, 1, 0)).normalize();
 
-      // 조이스틱 입력을 카메라 기준으로 변환
-      // joystickInput.y 음수 (위로 밀기) -> 카메라 전방으로 이동
-      // joystickInput.x 양수 (오른쪽으로 밀기) -> 카메라 오른쪽으로 이동
       direction.current.x += cameraDirection.x * (-joystickInput.y) + cameraRight.x * joystickInput.x;
       direction.current.z += cameraDirection.z * (-joystickInput.y) + cameraRight.z * joystickInput.x;
     }
@@ -73,7 +134,6 @@ export function useAvatarMovement(
 
     groupRef.current.position.copy(position.current);
 
-    // Update global position object (no React re-renders)
     avatarPosition.x = position.current.x;
     avatarPosition.y = position.current.y;
     avatarPosition.z = position.current.z;
@@ -89,5 +149,5 @@ export function useAvatarMovement(
     }
   });
 
-  return { position, direction };
+  return { position, direction, isRespawning, isFalling: isFalling.current };
 }

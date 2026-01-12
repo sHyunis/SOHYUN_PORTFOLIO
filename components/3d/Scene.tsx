@@ -4,16 +4,28 @@ import { Canvas, useThree, useFrame } from "@react-three/fiber";
 import { Stars, Sparkles, OrbitControls } from "@react-three/drei";
 import { Avatar } from "./Avatar";
 import { World } from "./World";
-import { Suspense, useRef, useState } from "react";
+import { Suspense, useRef, useState, useEffect } from "react";
 import { COLORS } from "@/constants/colors";
+import { useGameStore } from "@/store/gameStore";
 
 function CameraAnimation() {
   const { camera } = useThree();
-  const [hasAnimated, setHasAnimated] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(true);
   const startTime = useRef(0);
+  const shouldReplayIntro = useGameStore((state) => state.shouldReplayIntro);
+  const resetIntroReplay = useGameStore((state) => state.resetIntroReplay);
+
+  useEffect(() => {
+    if (shouldReplayIntro) {
+      camera.position.set(0, 80, 100);
+      startTime.current = 0;
+      setIsAnimating(true);
+      resetIntroReplay();
+    }
+  }, [shouldReplayIntro, camera, resetIntroReplay]);
 
   useFrame((state) => {
-    if (hasAnimated) return;
+    if (!isAnimating) return;
 
     if (startTime.current === 0) {
       startTime.current = state.clock.getElapsedTime();
@@ -34,10 +46,10 @@ function CameraAnimation() {
       const targetY = startY + (endY - startY) * eased;
       const targetZ = startZ + (endZ - startZ) * eased;
 
-      camera.position.set(camera.position.x, targetY, targetZ);
+      camera.position.set(0, targetY, targetZ);
       camera.lookAt(0, 1, 6);
     } else {
-      setHasAnimated(true);
+      setIsAnimating(false);
     }
   });
 
@@ -56,10 +68,7 @@ export function Scene() {
         <color attach="background" args={[COLORS.background.darkest]} />
 
         <ambientLight intensity={0.5} />
-        <directionalLight
-          position={[10, 10, 5]}
-          intensity={1}
-        />
+        <directionalLight position={[10, 10, 5]} intensity={1} />
 
         <Suspense fallback={null}>
           <CameraAnimation />
