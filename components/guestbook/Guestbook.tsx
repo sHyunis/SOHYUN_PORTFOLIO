@@ -116,9 +116,9 @@ export function Guestbook() {
     }
   };
 
-  const parentMessages = messages.filter(msg => !msg.reply_content);
+  const parentMessages = messages.filter(msg => msg.reply_content === null || msg.reply_content === undefined);
   const getReplies = (parentId: number) =>
-    messages.filter(msg => msg.reply_content === parentId)
+    messages.filter(msg => Number(msg.reply_content) === parentId)
       .sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
 
   return (
