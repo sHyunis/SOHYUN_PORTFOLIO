@@ -42,8 +42,18 @@ export function useAvatarMovement(
   useFrame((state, delta) => {
     if (!groupRef.current || !movementRef.current) return;
 
-    const { targetPosition, setTargetPosition, joystickInput } = useGameStore.getState();
+    const { targetPosition, setTargetPosition, joystickInput, teleportTo, setTeleportTo } = useGameStore.getState();
     const movement = movementRef.current;
+
+    if (teleportTo) {
+      position.current.set(teleportTo[0], teleportTo[1], teleportTo[2]);
+      groupRef.current.position.copy(position.current);
+      avatarPosition.x = teleportTo[0];
+      avatarPosition.y = teleportTo[1];
+      avatarPosition.z = teleportTo[2];
+      setTeleportTo(null);
+      return;
+    }
 
     if (isRespawning) {
       respawnTime.current += delta;
@@ -153,13 +163,15 @@ export function useAvatarMovement(
         position.current.y -= descendSpeed * delta;
 
         if (position.current.y <= RESPAWN_Y) {
-          position.current.set(0, 0, 6);
-          groupRef.current.rotation.set(0, 0, 0);
+          position.current.set(0, 0, 10);
+          groupRef.current.rotation.set(0, Math.PI, 0);
           isOnRocket.current = false;
           rocketPhase.current = null;
           isFalling.current = false;
           store.setRocketRescue(false);
           store.setIsFalling(false);
+          store.setJoystickInput({ x: 0, y: 0 });
+          store.setTargetPosition(null);
         }
       }
 

@@ -9,7 +9,7 @@ import { avatarPosition } from "@/store/avatarPosition";
 import { COLORS } from "@/constants/colors";
 
 const PORTAL_POSITION: [number, number, number] = [0, 0, 0];
-const INTERACTION_DISTANCE = 2.5;
+const INTERACTION_DISTANCE = 1.5;
 
 export function Portal() {
   const outerRingRef = useRef<THREE.Mesh>(null);
@@ -19,7 +19,8 @@ export function Portal() {
   const particlesRef = useRef<THREE.Points>(null);
   const verticalRingsRef = useRef<THREE.Group>(null);
   const coreRef = useRef<THREE.Mesh>(null);
-  const wasInPortalRef = useRef(false);
+  const canTriggerRef = useRef(true);
+  const wasActiveRef = useRef(false);
 
   const setActiveSection = useGameStore((state) => state.setActiveSection);
   const activeSection = useGameStore((state) => state.activeSection);
@@ -72,17 +73,28 @@ export function Portal() {
 
     const isInPortal = distance < INTERACTION_DISTANCE;
 
-    if (!isInPortal) {
-      wasInPortalRef.current = false;
+    if (activeSection) {
+      wasActiveRef.current = true;
+      canTriggerRef.current = false;
     }
 
-    if (!activeSection && isInPortal && !wasInPortalRef.current) {
-      wasInPortalRef.current = true;
+    if (!activeSection && wasActiveRef.current) {
+      wasActiveRef.current = false;
+      canTriggerRef.current = false;
+      useGameStore.getState().setTeleportTo([0, 0, 4]);
+    }
+
+    if (!isInPortal) {
+      canTriggerRef.current = true;
+    }
+
+    if (isInPortal && !activeSection && canTriggerRef.current) {
+      canTriggerRef.current = false;
       setActiveSection("overview");
     }
   });
 
-  const particleCount = 80;
+  const particleCount = 40;
   const particlePositions = useMemo(() => {
     const positions = new Float32Array(particleCount * 3);
     for (let i = 0; i < particleCount; i++) {
@@ -126,7 +138,7 @@ export function Portal() {
       </lineSegments>
 
       <mesh ref={outerRingRef} position={[0, 1.5, 0]}>
-        <torusGeometry args={[1.8, 0.04, 16, 64]} />
+        <torusGeometry args={[1.8, 0.04, 8, 32]} />
         <meshStandardMaterial
           color="#0a0a0a"
           emissive={COLORS.primary.skyBlue}
@@ -148,7 +160,7 @@ export function Portal() {
       </mesh>
 
       <mesh ref={innerRingRef} position={[0, 1.5, 0]}>
-        <torusGeometry args={[1.2, 0.02, 16, 48]} />
+        <torusGeometry args={[1.2, 0.02, 8, 24]} />
         <meshStandardMaterial
           color="#0a0a0a"
           emissive={COLORS.primary.skyBlue}
@@ -160,7 +172,7 @@ export function Portal() {
 
       <group ref={verticalRingsRef} position={[0, 1.5, 0]}>
         <mesh rotation={[Math.PI / 2, 0, 0]}>
-          <torusGeometry args={[1.6, 0.015, 16, 64]} />
+          <torusGeometry args={[1.6, 0.015, 8, 32]} />
           <meshStandardMaterial
             color="#0a0a0a"
             emissive={COLORS.primary.cyan}
@@ -170,7 +182,7 @@ export function Portal() {
           />
         </mesh>
         <mesh rotation={[Math.PI / 2, Math.PI / 3, 0]}>
-          <torusGeometry args={[1.55, 0.015, 16, 64]} />
+          <torusGeometry args={[1.55, 0.015, 8, 32]} />
           <meshStandardMaterial
             color="#0a0a0a"
             emissive={COLORS.portal.purple}
@@ -180,7 +192,7 @@ export function Portal() {
           />
         </mesh>
         <mesh rotation={[Math.PI / 2, -Math.PI / 3, 0]}>
-          <torusGeometry args={[1.65, 0.015, 16, 64]} />
+          <torusGeometry args={[1.65, 0.015, 8, 32]} />
           <meshStandardMaterial
             color="#0a0a0a"
             emissive={COLORS.primary.cyan}

@@ -20,6 +20,8 @@ interface GameState {
   setRocketRescue: (rescue: boolean) => void;
   rocketPosition: [number, number, number];
   setRocketPosition: (position: [number, number, number]) => void;
+  teleportTo: [number, number, number] | null;
+  setTeleportTo: (position: [number, number, number] | null) => void;
 }
 
 export const useGameStore = create<GameState>((set) => ({
@@ -40,4 +42,6 @@ export const useGameStore = create<GameState>((set) => ({
   setRocketRescue: (rescue) => set({ rocketRescue: rescue }),
   rocketPosition: [0, -50, 6],
   setRocketPosition: (position) => set({ rocketPosition: position }),
+  teleportTo: null,
+  setTeleportTo: (position) => set({ teleportTo: position }),
 }));
