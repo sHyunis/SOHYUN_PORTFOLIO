@@ -20,7 +20,7 @@ export function useAvatarMovement(
   const position = useRef(new THREE.Vector3(0, 0, 0));
   const direction = useRef(new THREE.Vector3());
 
-  useFrame((_, delta) => {
+  useFrame((state, delta) => {
     if (!groupRef.current || !movementRef.current) return;
 
     const { targetPosition, setTargetPosition, joystickInput } = useGameStore.getState();
@@ -34,8 +34,21 @@ export function useAvatarMovement(
     if (movement.right) direction.current.x += 1;
 
     if (joystickInput && (joystickInput.x !== 0 || joystickInput.y !== 0)) {
-      direction.current.x += joystickInput.x;
-      direction.current.z += joystickInput.y;
+      // 카메라의 전방 방향 (XZ 평면에 투영)
+      const cameraDirection = new THREE.Vector3();
+      state.camera.getWorldDirection(cameraDirection);
+      cameraDirection.y = 0;
+      cameraDirection.normalize();
+
+      // 카메라의 오른쪽 방향
+      const cameraRight = new THREE.Vector3();
+      cameraRight.crossVectors(cameraDirection, new THREE.Vector3(0, 1, 0)).normalize();
+
+      // 조이스틱 입력을 카메라 기준으로 변환
+      // joystickInput.y 음수 (위로 밀기) -> 카메라 전방으로 이동
+      // joystickInput.x 양수 (오른쪽으로 밀기) -> 카메라 오른쪽으로 이동
+      direction.current.x += cameraDirection.x * (-joystickInput.y) + cameraRight.x * joystickInput.x;
+      direction.current.z += cameraDirection.z * (-joystickInput.y) + cameraRight.z * joystickInput.x;
     }
 
     if (targetPosition && direction.current.length() === 0) {
