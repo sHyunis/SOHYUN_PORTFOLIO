@@ -25,11 +25,11 @@ export function World() {
   return (
     <group>
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.1, 0]} onClick={handleGroundClick}>
-        <planeGeometry args={[60, 60]} />
+        <planeGeometry args={[36, 36]} />
         <meshStandardMaterial color={COLORS.neutral.mediumGray} roughness={0.8} metalness={0.2} />
       </mesh>
 
-      <gridHelper args={[60, 60, COLORS.neutral.gray, COLORS.neutral.darkGray]} position={[0, 0.01, 0]} />
+      <gridHelper args={[36, 36, COLORS.neutral.gray, COLORS.neutral.darkGray]} position={[0, 0.01, 0]} />
 
       {HOUSES.map((house) => (
         <House key={house.id} position={HOUSE_POSITIONS[house.id] as [number, number, number]} label={house.label} section={house.id} />
