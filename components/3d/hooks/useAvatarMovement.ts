@@ -165,7 +165,7 @@ export function useAvatarMovement(
         position.current.y -= descendSpeed * delta;
 
         if (position.current.y <= RESPAWN_Y) {
-          position.current.set(0, 0, 10);
+          position.current.set(0, 0, 6);
           groupRef.current.rotation.set(0, 0, 0);
           isOnRocket.current = false;
           rocketPhase.current = null;
