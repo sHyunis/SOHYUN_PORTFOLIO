@@ -19,8 +19,8 @@ function CameraAnimation() {
     if (shouldReplayIntro) {
       camera.position.set(0, 80, 100);
       startTime.current = 0;
-      setIsAnimating(true);
       resetIntroReplay();
+      requestAnimationFrame(() => setIsAnimating(true));
     }
   }, [shouldReplayIntro, camera, resetIntroReplay]);
 

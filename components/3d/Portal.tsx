@@ -88,7 +88,8 @@ export function Portal() {
     for (let i = 0; i < particleCount; i++) {
       const phi = Math.acos(-1 + (2 * i) / particleCount);
       const theta = Math.sqrt(particleCount * Math.PI) * phi;
-      const radius = 1.3 + Math.random() * 0.4;
+      const seed = (i * 7919) % 1000 / 1000;
+      const radius = 1.3 + seed * 0.4;
       positions[i * 3] = Math.cos(theta) * Math.sin(phi) * radius;
       positions[i * 3 + 1] = Math.sin(theta) * Math.sin(phi) * radius;
       positions[i * 3 + 2] = Math.cos(phi) * radius;

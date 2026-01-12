@@ -149,5 +149,5 @@ export function useAvatarMovement(
     }
   });
 
-  return { position, direction, isRespawning, isFalling: isFalling.current };
+  return { position, direction, isRespawning };
 }
