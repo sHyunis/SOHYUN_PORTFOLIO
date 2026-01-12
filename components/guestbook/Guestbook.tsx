@@ -76,7 +76,7 @@ export function Guestbook() {
       const { error } = await supabase
         .from('guest_book')
         .insert([{
-          name: "Jung Sohyun",
+          name: "정소현",
           content: replyContent,
           reply_content: parentId
         }]);
