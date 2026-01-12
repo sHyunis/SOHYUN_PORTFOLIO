@@ -16,6 +16,10 @@ interface GameState {
   shouldReplayIntro: boolean;
   triggerIntroReplay: () => void;
   resetIntroReplay: () => void;
+  rocketRescue: boolean;
+  setRocketRescue: (rescue: boolean) => void;
+  rocketPosition: [number, number, number];
+  setRocketPosition: (position: [number, number, number]) => void;
 }
 
 export const useGameStore = create<GameState>((set) => ({
@@ -32,4 +36,8 @@ export const useGameStore = create<GameState>((set) => ({
   shouldReplayIntro: false,
   triggerIntroReplay: () => set({ shouldReplayIntro: true }),
   resetIntroReplay: () => set({ shouldReplayIntro: false }),
+  rocketRescue: false,
+  setRocketRescue: (rescue) => set({ rocketRescue: rescue }),
+  rocketPosition: [0, -50, 6],
+  setRocketPosition: (position) => set({ rocketPosition: position }),
 }));

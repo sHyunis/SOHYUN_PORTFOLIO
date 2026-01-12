@@ -4,6 +4,7 @@ import { Canvas, useThree, useFrame } from "@react-three/fiber";
 import { Stars, Sparkles, OrbitControls } from "@react-three/drei";
 import { Avatar } from "./Avatar";
 import { World } from "./World";
+import { Rocket } from "./Rocket";
 import { Suspense, useRef, useState, useEffect } from "react";
 import { COLORS } from "@/constants/colors";
 import { useGameStore } from "@/store/gameStore";
@@ -74,6 +75,7 @@ export function Scene() {
           <CameraAnimation />
           <World />
           <Avatar />
+          <Rocket />
           <Stars radius={150} depth={150} count={25000} factor={8} saturation={0} fade speed={1} />
           <Stars radius={100} depth={100} count={15000} factor={5} saturation={0} fade speed={0.5} />
           <Stars radius={50} depth={50} count={8000} factor={3} saturation={0} fade speed={0.3} />

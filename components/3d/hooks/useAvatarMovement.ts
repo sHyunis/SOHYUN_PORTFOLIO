@@ -15,7 +15,9 @@ const MOVEMENT_SPEED = 5;
 const FLOOR_BOUNDARY = 18;
 const FALL_SPEED = 12;
 const FALL_ACCELERATION = 20;
-const RESPAWN_Y = -120;
+const ROCKET_CATCH_Y = -25;
+const ROCKET_RISE_SPEED = 25;
+const RESPAWN_Y = 0;
 
 export function useAvatarMovement(
   groupRef: React.RefObject<THREE.Group | null>,
@@ -28,6 +30,9 @@ export function useAvatarMovement(
   const fallRotation = useRef({ x: 0, z: 0 });
   const [isRespawning, setIsRespawning] = useState(false);
   const respawnTime = useRef(0);
+  const isOnRocket = useRef(false);
+  const rocketPhase = useRef<"catching" | "rising" | "landing" | "departing" | null>(null);
+  const departTime = useRef(0);
 
   const triggerRespawn = useCallback(() => {
     setIsRespawning(true);
@@ -68,21 +73,94 @@ export function useAvatarMovement(
       useGameStore.getState().setIsFalling(true);
     }
 
-    if (isFalling.current) {
+    if (isFalling.current && !isOnRocket.current) {
       fallVelocity.current += FALL_ACCELERATION * delta;
       position.current.y -= fallVelocity.current * delta;
 
       groupRef.current.rotation.x += fallRotation.current.x * delta;
       groupRef.current.rotation.z += fallRotation.current.z * delta;
 
-      if (position.current.y < RESPAWN_Y) {
-        position.current.set(0, 0, 6);
-        groupRef.current.rotation.set(0, 0, 0);
-        isFalling.current = false;
+      if (position.current.y < ROCKET_CATCH_Y) {
+        isOnRocket.current = true;
+        rocketPhase.current = "catching";
         fallVelocity.current = 0;
-        useGameStore.getState().setIsFalling(false);
-        useGameStore.getState().triggerIntroReplay();
-        triggerRespawn();
+        groupRef.current.rotation.set(0, 0, 0);
+        groupRef.current.visible = false;
+        useGameStore.getState().setRocketRescue(true);
+        useGameStore.getState().setRocketPosition([position.current.x, position.current.y - 1.5, position.current.z]);
+      }
+
+      groupRef.current.position.copy(position.current);
+      avatarPosition.x = position.current.x;
+      avatarPosition.y = position.current.y;
+      avatarPosition.z = position.current.z;
+      return;
+    }
+
+    if (isOnRocket.current) {
+      const store = useGameStore.getState();
+      const rocketOffset = 1.8;
+
+      if (rocketPhase.current === "catching") {
+        rocketPhase.current = "rising";
+        groupRef.current.rotation.set(0, 0, 0);
+      }
+
+      if (rocketPhase.current === "rising") {
+        const targetY = RESPAWN_Y + 10;
+        const progress = Math.min((position.current.y + 25) / (targetY + 25), 1);
+        const easeOut = 1 - Math.pow(1 - progress, 2);
+        const currentSpeed = ROCKET_RISE_SPEED * (1.2 - easeOut * 0.7);
+
+        position.current.y += currentSpeed * delta;
+        position.current.x += (0 - position.current.x) * 0.02;
+        position.current.z += (6 - position.current.z) * 0.02;
+
+        store.setRocketPosition([position.current.x, position.current.y - rocketOffset, position.current.z]);
+
+        if (position.current.y >= targetY) {
+          rocketPhase.current = "landing";
+        }
+      }
+
+      if (rocketPhase.current === "landing") {
+        groupRef.current.visible = false;
+
+        const targetY = 3;
+        const heightAboveTarget = position.current.y - targetY;
+        const landingSpeed = Math.max(1.5, heightAboveTarget * 0.8);
+        position.current.y -= landingSpeed * delta;
+
+        const hoverWobble = Math.sin(Date.now() * 0.005) * 0.03;
+        store.setRocketPosition([hoverWobble, position.current.y - rocketOffset, 6]);
+
+        if (position.current.y <= targetY + 0.3) {
+          position.current.set(0, targetY, 6);
+          rocketPhase.current = "departing";
+          departTime.current = 0;
+          groupRef.current.visible = true;
+        }
+      }
+
+      if (rocketPhase.current === "departing") {
+        departTime.current += delta;
+
+        const hoverWobble = Math.sin(Date.now() * 0.003) * 0.02;
+        const hoverY = Math.sin(Date.now() * 0.004) * 0.03;
+        store.setRocketPosition([hoverWobble, 3 - rocketOffset + hoverY, 6]);
+
+        const descendSpeed = 8;
+        position.current.y -= descendSpeed * delta;
+
+        if (position.current.y <= RESPAWN_Y) {
+          position.current.set(0, 0, 6);
+          groupRef.current.rotation.set(0, 0, 0);
+          isOnRocket.current = false;
+          rocketPhase.current = null;
+          isFalling.current = false;
+          store.setRocketRescue(false);
+          store.setIsFalling(false);
+        }
       }
 
       groupRef.current.position.copy(position.current);
