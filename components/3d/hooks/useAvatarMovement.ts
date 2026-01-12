@@ -13,8 +13,8 @@ interface IMovementInput {
 
 const MOVEMENT_SPEED = 5;
 const FLOOR_BOUNDARY = 18;
-const FALL_SPEED = 12;
-const FALL_ACCELERATION = 20;
+const FALL_SPEED = 8;
+const FALL_ACCELERATION = 12;
 const ROCKET_CATCH_Y = -25;
 const ROCKET_RISE_SPEED = 25;
 const RESPAWN_Y = 0;
