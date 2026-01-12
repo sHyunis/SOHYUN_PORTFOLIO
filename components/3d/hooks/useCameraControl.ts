@@ -38,8 +38,8 @@ export function useCameraControl(avatarPosition: THREE.Vector3) {
       if (controls) controls.enabled = false;
       postRocketTransition.current += delta;
 
-      const targetCamPos = new THREE.Vector3(0, 1.8, 12);
-      const targetLookAt = new THREE.Vector3(0, 1, 6);
+      const targetCamPos = new THREE.Vector3(0, 1.5, 13);
+      const targetLookAt = new THREE.Vector3(0, 0.5, 10);
 
       camera.position.lerp(targetCamPos, 0.06);
       camera.lookAt(
@@ -52,7 +52,7 @@ export function useCameraControl(avatarPosition: THREE.Vector3) {
         wasOnRocket.current = false;
         postRocketTransition.current = 0;
         if (controls) {
-          controls.target.set(0, 1, 6);
+          controls.target.set(0, 0.5, 10);
           controls.enabled = true;
         }
       }

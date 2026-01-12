@@ -80,6 +80,7 @@ export function useAvatarMovement(
         z: (Math.random() - 0.5) * 4,
       };
       setTargetPosition(null);
+      useGameStore.getState().setJoystickInput({ x: 0, y: 0 });
       useGameStore.getState().setIsFalling(true);
     }
 
@@ -96,6 +97,7 @@ export function useAvatarMovement(
         fallVelocity.current = 0;
         groupRef.current.rotation.set(0, 0, 0);
         groupRef.current.visible = false;
+        useGameStore.getState().setJoystickInput({ x: 0, y: 0 });
         useGameStore.getState().setRocketRescue(true);
         useGameStore.getState().setRocketPosition([position.current.x, position.current.y - 1.5, position.current.z]);
       }

@@ -11,7 +11,14 @@ type TSectionKey = keyof typeof HOUSE_POSITIONS;
 export function useNearbySection(avatarPosition: THREE.Vector3) {
   useFrame(() => {
     const state = useGameStore.getState();
-    const { nearbySection, activeSection, targetPosition } = state;
+    const { nearbySection, activeSection, targetPosition, isFalling, rocketRescue } = state;
+
+    if (isFalling || rocketRescue) {
+      if (nearbySection !== null) {
+        state.setNearbySection(null);
+      }
+      return;
+    }
 
     let nearest: TSectionKey | null = null;
 

@@ -66,6 +66,9 @@ export function Portal() {
       coreRef.current.scale.setScalar(0.3 + Math.sin(time * 3) * 0.05);
     }
 
+    const { isFalling, rocketRescue } = useGameStore.getState();
+    if (isFalling || rocketRescue) return;
+
     const distance = Math.sqrt(
       Math.pow(avatarPosition.x - PORTAL_POSITION[0], 2) +
       Math.pow(avatarPosition.z - PORTAL_POSITION[2], 2)
