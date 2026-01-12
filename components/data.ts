@@ -155,6 +155,23 @@ export const EXPERIENCE = [
 
 export const PROJECTS = [
   {
+    name: "3D Portfolio",
+    period: "2025.01 (개인 프로젝트)",
+    role: "Frontend Developer",
+    description: "Three.js 기반 인터랙티브 3D 포트폴리오 사이트",
+    image: "/images/projects/portfolio3d.png",
+    link: "https://portfolio-jsh-xi.vercel.app/",
+    tech: ["Next.js", "TypeScript", "Three.js", "React Three Fiber", "Zustand", "Tailwind CSS", "Supabase"],
+    features: [
+      "React Three Fiber를 활용한 3D 인터랙티브 씬 구현",
+      "키보드/조이스틱 기반 아바타 이동 시스템",
+      "포탈 기반 섹션 네비게이션",
+      "카메라 애니메이션 및 낙하/리스폰 시스템",
+      "방명록 기능 (Supabase 연동)",
+      "반응형 UI 및 모바일 지원",
+    ]
+  },
+  {
     name: "Dream Card (드림카드)",
     period: "2024.10 ~ 2024.11 (5 weeks)",
     role: "Frontend Developer",
