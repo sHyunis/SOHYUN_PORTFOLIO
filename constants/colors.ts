@@ -7,6 +7,13 @@ export const COLORS = {
     skyBlueEmissive: "#0ea5e9",
   },
 
+  // Portal colors (purple theme)
+  portal: {
+    purple: "#a855f7",
+    purpleLight: "#c4b5fd",
+    purpleDark: "#7c3aed",
+  },
+
   // Background colors
   background: {
     dark: "#0a0a0a",
@@ -64,6 +71,7 @@ export const COLORS = {
 
 export type ColorKey = keyof typeof COLORS;
 export type PrimaryColorKey = keyof typeof COLORS.primary;
+export type PortalColorKey = keyof typeof COLORS.portal;
 export type BackgroundColorKey = keyof typeof COLORS.background;
 export type NeutralColorKey = keyof typeof COLORS.neutral;
 export type WhiteColorKey = keyof typeof COLORS.white;

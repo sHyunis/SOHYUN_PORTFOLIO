@@ -1,39 +1,68 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useMemo } from "react";
 import { useFrame } from "@react-three/fiber";
 import { Text } from "@react-three/drei";
 import * as THREE from "three";
 import { useGameStore } from "@/store/gameStore";
 import { avatarPosition } from "@/store/avatarPosition";
+import { COLORS } from "@/constants/colors";
 
 const PORTAL_POSITION: [number, number, number] = [0, 0, 0];
 const INTERACTION_DISTANCE = 2.5;
 
 export function Portal() {
-  const ringRef = useRef<THREE.Mesh>(null);
+  const outerRingRef = useRef<THREE.Mesh>(null);
+  const middleRingRef = useRef<THREE.Mesh>(null);
   const innerRingRef = useRef<THREE.Mesh>(null);
-  const glowRef = useRef<THREE.Mesh>(null);
+  const hexagonRef = useRef<THREE.LineSegments>(null);
   const particlesRef = useRef<THREE.Points>(null);
+  const verticalRingsRef = useRef<THREE.Group>(null);
+  const coreRef = useRef<THREE.Mesh>(null);
   const wasInPortalRef = useRef(false);
 
   const setActiveSection = useGameStore((state) => state.setActiveSection);
   const activeSection = useGameStore((state) => state.activeSection);
 
+  const hexagonEdges = useMemo(() => {
+    const shape = new THREE.Shape();
+    const sides = 6;
+    const radius = 1.6;
+    for (let i = 0; i <= sides; i++) {
+      const angle = (i / sides) * Math.PI * 2 - Math.PI / 2;
+      const x = Math.cos(angle) * radius;
+      const y = Math.sin(angle) * radius;
+      if (i === 0) shape.moveTo(x, y);
+      else shape.lineTo(x, y);
+    }
+    const geometry = new THREE.ShapeGeometry(shape);
+    return new THREE.EdgesGeometry(geometry);
+  }, []);
+
   useFrame((state) => {
     const time = state.clock.elapsedTime;
 
-    if (ringRef.current) {
-      ringRef.current.rotation.z = time * 0.5;
+    if (outerRingRef.current) {
+      outerRingRef.current.rotation.z = time * 0.3;
+    }
+    if (middleRingRef.current) {
+      middleRingRef.current.rotation.z = -time * 0.5;
     }
     if (innerRingRef.current) {
-      innerRingRef.current.rotation.z = -time * 0.8;
+      innerRingRef.current.rotation.z = time * 0.7;
     }
-    if (glowRef.current) {
-      glowRef.current.scale.setScalar(1 + Math.sin(time * 2) * 0.1);
+    if (hexagonRef.current) {
+      hexagonRef.current.rotation.z = -time * 0.2;
     }
     if (particlesRef.current) {
-      particlesRef.current.rotation.y = time * 0.3;
+      particlesRef.current.rotation.y = time * 0.4;
+      particlesRef.current.rotation.x = Math.sin(time * 0.5) * 0.1;
+    }
+    if (verticalRingsRef.current) {
+      verticalRingsRef.current.rotation.y = time * 0.6;
+    }
+    if (coreRef.current) {
+      coreRef.current.scale.setScalar(0.3 + Math.sin(time * 3) * 0.05);
     }
 
     const distance = Math.sqrt(
@@ -43,66 +72,123 @@ export function Portal() {
 
     const isInPortal = distance < INTERACTION_DISTANCE;
 
-    // 포털 범위를 벗어나면 재진입 가능하도록 리셋
     if (!isInPortal) {
       wasInPortalRef.current = false;
     }
 
-    // 포털에 처음 진입할 때만 overview 열기
     if (!activeSection && isInPortal && !wasInPortalRef.current) {
       wasInPortalRef.current = true;
       setActiveSection("overview");
     }
   });
 
-  const particleCount = 50;
-  const particlePositions = new Float32Array(particleCount * 3);
-  for (let i = 0; i < particleCount; i++) {
-    const angle = (i / particleCount) * Math.PI * 2;
-    const radius = 1.2 + Math.random() * 0.5;
-    particlePositions[i * 3] = Math.cos(angle) * radius;
-    particlePositions[i * 3 + 1] = (Math.random() - 0.5) * 2;
-    particlePositions[i * 3 + 2] = Math.sin(angle) * radius;
-  }
+  const particleCount = 80;
+  const particlePositions = useMemo(() => {
+    const positions = new Float32Array(particleCount * 3);
+    for (let i = 0; i < particleCount; i++) {
+      const phi = Math.acos(-1 + (2 * i) / particleCount);
+      const theta = Math.sqrt(particleCount * Math.PI) * phi;
+      const radius = 1.3 + Math.random() * 0.4;
+      positions[i * 3] = Math.cos(theta) * Math.sin(phi) * radius;
+      positions[i * 3 + 1] = Math.sin(theta) * Math.sin(phi) * radius;
+      positions[i * 3 + 2] = Math.cos(phi) * radius;
+    }
+    return positions;
+  }, []);
 
   return (
     <group position={PORTAL_POSITION}>
-      <mesh ref={glowRef} position={[0, 1.5, 0]}>
-        <sphereGeometry args={[1.8, 32, 32]} />
-        <meshBasicMaterial color="#8b5cf6" transparent opacity={0.15} />
-      </mesh>
-
-      <mesh ref={ringRef} position={[0, 1.5, 0]}>
-        <torusGeometry args={[1.5, 0.08, 16, 64]} />
+      <mesh ref={coreRef} position={[0, 1.5, 0]}>
+        <icosahedronGeometry args={[0.3, 1]} />
         <meshStandardMaterial
-          color="#a78bfa"
-          emissive="#8b5cf6"
-          emissiveIntensity={2}
-          metalness={0.8}
-          roughness={0.2}
-        />
-      </mesh>
-
-      <mesh ref={innerRingRef} position={[0, 1.5, 0]}>
-        <torusGeometry args={[1.1, 0.05, 16, 64]} />
-        <meshStandardMaterial
-          color="#c4b5fd"
-          emissive="#a78bfa"
-          emissiveIntensity={1.5}
-          metalness={0.8}
-          roughness={0.2}
+          color="#000000"
+          emissive={COLORS.portal.purple}
+          emissiveIntensity={3}
+          metalness={1}
+          roughness={0}
         />
       </mesh>
 
       <mesh position={[0, 1.5, 0]}>
-        <circleGeometry args={[1.4, 64]} />
+        <circleGeometry args={[1.2, 64]} />
         <meshBasicMaterial
-          color="#4c1d95"
+          color="#000000"
           transparent
-          opacity={0.6}
+          opacity={0.9}
           side={THREE.DoubleSide}
         />
       </mesh>
+
+      <lineSegments ref={hexagonRef} position={[0, 1.5, 0]}>
+        <bufferGeometry attach="geometry" {...hexagonEdges} />
+        <lineBasicMaterial color={COLORS.portal.purpleLight} transparent opacity={0.8} />
+      </lineSegments>
+
+      <mesh ref={outerRingRef} position={[0, 1.5, 0]}>
+        <torusGeometry args={[1.8, 0.04, 16, 64]} />
+        <meshStandardMaterial
+          color="#0a0a0a"
+          emissive={COLORS.primary.skyBlue}
+          emissiveIntensity={2}
+          metalness={0.9}
+          roughness={0.1}
+        />
+      </mesh>
+
+      <mesh ref={middleRingRef} position={[0, 1.5, 0]}>
+        <torusGeometry args={[1.5, 0.03, 8, 32]} />
+        <meshStandardMaterial
+          color="#0a0a0a"
+          emissive={COLORS.portal.purple}
+          emissiveIntensity={2.5}
+          metalness={0.9}
+          roughness={0.1}
+        />
+      </mesh>
+
+      <mesh ref={innerRingRef} position={[0, 1.5, 0]}>
+        <torusGeometry args={[1.2, 0.02, 16, 48]} />
+        <meshStandardMaterial
+          color="#0a0a0a"
+          emissive={COLORS.primary.skyBlue}
+          emissiveIntensity={2}
+          metalness={0.9}
+          roughness={0.1}
+        />
+      </mesh>
+
+      <group ref={verticalRingsRef} position={[0, 1.5, 0]}>
+        <mesh rotation={[Math.PI / 2, 0, 0]}>
+          <torusGeometry args={[1.6, 0.015, 16, 64]} />
+          <meshStandardMaterial
+            color="#0a0a0a"
+            emissive={COLORS.primary.cyan}
+            emissiveIntensity={1.5}
+            transparent
+            opacity={0.6}
+          />
+        </mesh>
+        <mesh rotation={[Math.PI / 2, Math.PI / 3, 0]}>
+          <torusGeometry args={[1.55, 0.015, 16, 64]} />
+          <meshStandardMaterial
+            color="#0a0a0a"
+            emissive={COLORS.portal.purple}
+            emissiveIntensity={1.5}
+            transparent
+            opacity={0.6}
+          />
+        </mesh>
+        <mesh rotation={[Math.PI / 2, -Math.PI / 3, 0]}>
+          <torusGeometry args={[1.65, 0.015, 16, 64]} />
+          <meshStandardMaterial
+            color="#0a0a0a"
+            emissive={COLORS.primary.cyan}
+            emissiveIntensity={1.5}
+            transparent
+            opacity={0.6}
+          />
+        </mesh>
+      </group>
 
       <points ref={particlesRef} position={[0, 1.5, 0]}>
         <bufferGeometry>
@@ -112,33 +198,43 @@ export function Portal() {
           />
         </bufferGeometry>
         <pointsMaterial
-          color="#e9d5ff"
-          size={0.08}
+          color={COLORS.primary.cyan}
+          size={0.04}
           transparent
-          opacity={0.8}
+          opacity={0.9}
           sizeAttenuation
         />
       </points>
 
-      <mesh position={[0, 0.1, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-        <ringGeometry args={[1.3, 1.8, 32]} />
-        <meshStandardMaterial
-          color="#8b5cf6"
-          emissive="#7c3aed"
-          emissiveIntensity={0.5}
+      <mesh position={[0, 0.02, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+        <ringGeometry args={[1.5, 2.2, 6]} />
+        <meshBasicMaterial
+          color={COLORS.primary.cyan}
           transparent
-          opacity={0.3}
+          opacity={0.15}
         />
       </mesh>
 
-      <pointLight position={[0, 1.5, 0]} color="#a78bfa" intensity={3} distance={8} />
+      <mesh position={[0, 0.03, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+        <ringGeometry args={[2.0, 2.1, 6]} />
+        <meshBasicMaterial
+          color={COLORS.primary.skyBlue}
+          transparent
+          opacity={0.4}
+        />
+      </mesh>
+
+      <pointLight position={[0, 1.5, 0]} color={COLORS.portal.purple} intensity={3} distance={8} />
+      <pointLight position={[0, 2.5, 0]} color={COLORS.primary.cyan} intensity={2} distance={6} />
+      <pointLight position={[0, 0.5, 0]} color={COLORS.primary.skyBlue} intensity={2} distance={5} />
 
       <Text
         position={[0, 4.2, 0]}
-        fontSize={0.5}
-        color="#e9d5ff"
+        fontSize={0.45}
+        color={COLORS.portal.purpleLight}
         anchorX="center"
         anchorY="middle"
+        letterSpacing={0.2}
       >
         ALL
       </Text>
