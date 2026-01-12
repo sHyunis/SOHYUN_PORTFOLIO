@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useMemo } from "react";
 import { useFrame, ThreeEvent } from "@react-three/fiber";
 import { Text, useCursor } from "@react-three/drei";
 import { useGameStore } from "@/store/gameStore";
@@ -12,54 +12,125 @@ interface IHouseProps {
 }
 
 export function House({ position, label, section }: IHouseProps) {
-  const doorRef = useRef<THREE.Mesh>(null);
+  const groupRef = useRef<THREE.Group>(null);
   const [hovered, setHovered] = useState(false);
-  const [houseHovered, setHouseHovered] = useState(false);
 
   const activeSection = useGameStore((state) => state.activeSection);
   const nearbySection = useGameStore((state) => state.nearbySection);
   const setTargetPosition = useGameStore((state) => state.setTargetPosition);
 
   const isActive = activeSection === section || nearbySection === section;
-  const isAnyHovered = hovered || houseHovered;
+  const isHighlighted = hovered || isActive;
 
-  useCursor(isAnyHovered);
+  useCursor(hovered);
+
+  const boxEdges = useMemo(() => new THREE.EdgesGeometry(new THREE.BoxGeometry(3, 3, 3)), []);
+  const roofEdges = useMemo(() => new THREE.EdgesGeometry(new THREE.ConeGeometry(2.5, 1.5, 4)), []);
 
   useFrame((_, delta) => {
-    if (doorRef.current) {
-      const targetRotation = isActive ? Math.PI / 2 : 0;
-      doorRef.current.rotation.y = THREE.MathUtils.lerp(doorRef.current.rotation.y, targetRotation, delta * 5);
+    if (groupRef.current) {
+      const targetY = hovered ? 0.1 : 0;
+      groupRef.current.position.y = THREE.MathUtils.lerp(groupRef.current.position.y, targetY, delta * 8);
     }
   });
 
   const handleClick = (e: ThreeEvent<MouseEvent>) => {
     e.stopPropagation();
-    const targetZ = position[2] + 1.5;
-    setTargetPosition([position[0], 0, targetZ]);
+    setTargetPosition([position[0], 0, position[2] + 2]);
   };
 
   return (
     <group position={position}>
-      <mesh position={[0, 1.5, 0]} onClick={handleClick} onPointerOver={() => setHouseHovered(true)} onPointerOut={() => setHouseHovered(false)}>
-        <boxGeometry args={[3, 3, 3]} />
-        <meshStandardMaterial color={COLORS.background.slate} roughness={0.1} metalness={0.8} transparent opacity={0.7} />
-      </mesh>
-
-      <mesh position={[0, 3.75, 0]} rotation={[0, Math.PI / 4, 0]} onClick={handleClick} onPointerOver={() => setHouseHovered(true)} onPointerOut={() => setHouseHovered(false)}>
-        <coneGeometry args={[2.5, 1.5, 4]} />
-        <meshStandardMaterial color={COLORS.background.slateDark} roughness={0.1} metalness={0.9} transparent opacity={0.7} />
-      </mesh>
-
-      <group position={[0, 1, 1.51]}>
-        <mesh ref={doorRef} position={[0.5, 0, 0]} onPointerOver={() => setHovered(true)} onPointerOut={() => setHovered(false)}>
-          <boxGeometry args={[1, 2, 0.1]} />
-          <meshStandardMaterial color={COLORS.neutral.black} emissive={COLORS.primary.skyBlue} emissiveIntensity={hovered || isActive ? 2 : 0.5} toneMapped={false} />
+      <group ref={groupRef}>
+        {/* 집 본체 */}
+        <mesh
+          position={[0, 1.5, 0]}
+          onClick={handleClick}
+          onPointerOver={() => setHovered(true)}
+          onPointerOut={() => setHovered(false)}
+        >
+          <boxGeometry args={[3, 3, 3]} />
+          <meshStandardMaterial
+            color="#0f0f0f"
+            roughness={0.4}
+            metalness={0.8}
+          />
         </mesh>
+
+        {/* 집 엣지 - 빛나는 라인 */}
+        <lineSegments position={[0, 1.5, 0]} geometry={boxEdges}>
+          <lineBasicMaterial
+            color={COLORS.primary.skyBlue}
+            transparent
+            opacity={isHighlighted ? 1 : 0.3}
+          />
+        </lineSegments>
+
+        {/* 지붕 */}
+        <mesh
+          position={[0, 3.75, 0]}
+          rotation={[0, Math.PI / 4, 0]}
+          onClick={handleClick}
+          onPointerOver={() => setHovered(true)}
+          onPointerOut={() => setHovered(false)}
+        >
+          <coneGeometry args={[2.5, 1.5, 4]} />
+          <meshStandardMaterial
+            color="#141414"
+            roughness={0.3}
+            metalness={0.9}
+          />
+        </mesh>
+
+        {/* 지붕 엣지 */}
+        <lineSegments position={[0, 3.75, 0]} rotation={[0, Math.PI / 4, 0]} geometry={roofEdges}>
+          <lineBasicMaterial
+            color={COLORS.primary.skyBlue}
+            transparent
+            opacity={isHighlighted ? 1 : 0.3}
+          />
+        </lineSegments>
+
+        {/* 문 - 빛나는 패널 */}
+        <mesh position={[0, 1, 1.52]}>
+          <boxGeometry args={[0.9, 1.8, 0.05]} />
+          <meshStandardMaterial
+            color="#000000"
+            emissive={COLORS.primary.skyBlue}
+            emissiveIntensity={isHighlighted ? 1.5 : 0.4}
+          />
+        </mesh>
+
+        {/* 라벨 */}
+        <Text
+          position={[0, 5.2, 0]}
+          fontSize={0.4}
+          color={isHighlighted ? COLORS.primary.skyBlue : COLORS.white.base}
+          anchorX="center"
+          anchorY="middle"
+          letterSpacing={0.15}
+        >
+          {label.toUpperCase()}
+        </Text>
       </group>
 
-      <Text position={[0, 5.5, 0]} fontSize={0.45} color={COLORS.white.base} anchorX="center" anchorY="middle" letterSpacing={0.2} outlineWidth={0.03} outlineColor={COLORS.neutral.black} outlineOpacity={1} fillOpacity={1}>
-        {label.toUpperCase()}
-      </Text>
+      {/* 바닥 글로우 */}
+      <mesh position={[0, 0.01, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+        <circleGeometry args={[2, 32]} />
+        <meshBasicMaterial
+          color={COLORS.primary.skyBlue}
+          transparent
+          opacity={isHighlighted ? 0.2 : 0.05}
+        />
+      </mesh>
+
+      {/* 조명 */}
+      <pointLight
+        position={[0, 2, 2]}
+        color={COLORS.primary.skyBlue}
+        intensity={isHighlighted ? 2 : 0.5}
+        distance={5}
+      />
     </group>
   );
 }

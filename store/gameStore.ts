@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-type TActiveSection = "about" | "work" | "projects" | "skills" | "contact" | "guestbook" | null;
+type TActiveSection = "about" | "work" | "projects" | "skills" | "contact" | "guestbook" | "overview" | null;
 
 interface GameState {
   activeSection: TActiveSection;

@@ -27,15 +27,15 @@ function CameraAnimation() {
       const eased = 1 - Math.pow(1 - progress, 4);
 
       const startY = 80;
-      const endY = 8;
+      const endY = 1.8;
       const startZ = 100;
-      const endZ = 10;
+      const endZ = 12;
 
       const targetY = startY + (endY - startY) * eased;
       const targetZ = startZ + (endZ - startZ) * eased;
 
       camera.position.set(camera.position.x, targetY, targetZ);
-      camera.lookAt(0, 0, 0);
+      camera.lookAt(0, 1, 6);
     } else {
       setHasAnimated(true);
     }

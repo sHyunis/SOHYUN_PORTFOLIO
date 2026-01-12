@@ -8,6 +8,7 @@ import { Skills } from "@/components/skills/Skills";
 import { Philosophy } from "@/components/about/Philosophy";
 import { Footer } from "@/components/layout/Footer";
 import { Guestbook } from "@/components/guestbook/Guestbook";
+import { Overview } from "@/components/overview/Overview";
 import { MiniMap } from "@/components/ui/MiniMap";
 import { Joystick } from "@/components/ui/Joystick";
 import { HOUSE_POSITIONS } from "@/components/3d/constants";
@@ -21,9 +22,14 @@ export function Interface() {
 
   const handleClose = () => {
     if (activeSection) {
-      const housePos = HOUSE_POSITIONS[activeSection as keyof typeof HOUSE_POSITIONS];
-      if (housePos) {
-        setTargetPosition([housePos[0], 0, housePos[2] + 6]);
+      if (activeSection === "overview") {
+        // 포털에서 벗어나도록 뒤로 이동
+        setTargetPosition([0, 0, 5]);
+      } else {
+        const housePos = HOUSE_POSITIONS[activeSection as keyof typeof HOUSE_POSITIONS];
+        if (housePos) {
+          setTargetPosition([housePos[0], 0, housePos[2] + 6]);
+        }
       }
     }
     setActiveSection(null);
@@ -55,7 +61,7 @@ export function Interface() {
       </motion.div>
 
       <AnimatePresence>
-        {activeSection && (
+        {activeSection && activeSection !== "overview" && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -76,7 +82,7 @@ export function Interface() {
               >
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
               </button>
-              
+
               <div className="flex-1 overflow-y-auto custom-scrollbar px-6 md:px-12 py-8">
                 {activeSection === "about" && <Philosophy />}
                 {activeSection === "work" && <WorkExperience />}
@@ -84,6 +90,35 @@ export function Interface() {
                 {activeSection === "skills" && <Skills />}
                 {activeSection === "contact" && <Footer />}
                 {activeSection === "guestbook" && <Guestbook />}
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+
+        {activeSection === "overview" && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md"
+            onClick={handleClose}
+          >
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 30 }}
+              transition={{ duration: 0.5 }}
+              className="h-full w-full overflow-y-auto custom-scrollbar"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="max-w-6xl mx-auto px-6 md:px-12 py-8">
+                <button
+                  onClick={handleClose}
+                  className="fixed top-6 right-6 text-white/50 hover:text-white z-50 bg-black/50 rounded-full p-2 backdrop-blur-sm border border-white/10"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+                <Overview />
               </div>
             </motion.div>
           </motion.div>

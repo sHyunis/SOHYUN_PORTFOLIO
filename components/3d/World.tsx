@@ -3,6 +3,7 @@ import { useGameStore } from "@/store/gameStore";
 import { HOUSE_POSITIONS } from "./constants";
 import { COLORS } from "@/constants/colors";
 import { House } from "./House";
+import { Portal } from "./Portal";
 
 const HOUSES = [
   { id: "about", label: "About" },
@@ -33,6 +34,8 @@ export function World() {
       {HOUSES.map((house) => (
         <House key={house.id} position={HOUSE_POSITIONS[house.id] as [number, number, number]} label={house.label} section={house.id} />
       ))}
+
+      <Portal />
     </group>
   );
 }

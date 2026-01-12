@@ -17,7 +17,7 @@ export function useAvatarMovement(
   groupRef: React.RefObject<THREE.Group | null>,
   movementRef: React.RefObject<IMovementInput | null>
 ) {
-  const position = useRef(new THREE.Vector3(0, 0, 0));
+  const position = useRef(new THREE.Vector3(0, 0, 6));
   const direction = useRef(new THREE.Vector3());
 
   useFrame((state, delta) => {
