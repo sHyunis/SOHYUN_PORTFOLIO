@@ -203,12 +203,15 @@ export function Guestbook() {
               <p className="text-gray-300 mb-3">{msg.content}</p>
 
               {getReplies(msg.id).map((reply) => (
-                <div key={reply.id} className="ml-4 mt-3 pl-4 border-l-2 border-purple-500/50">
-                  <div className="flex justify-between items-start mb-1">
-                    <span className="font-bold text-purple-400 text-sm">{reply.name}</span>
-                    <span className="text-xs text-gray-500">{new Date(reply.created_at).toLocaleDateString()}</span>
+                <div key={reply.id} className="ml-4 mt-3 flex gap-2">
+                  <span className="text-purple-400 text-sm mt-0.5">└</span>
+                  <div className="flex-1 pl-3 border-l-2 border-purple-500/30">
+                    <div className="flex justify-between items-start mb-1">
+                      <span className="font-bold text-purple-400 text-sm">{reply.name}</span>
+                      <span className="text-xs text-gray-500">{new Date(reply.created_at).toLocaleDateString()}</span>
+                    </div>
+                    <p className="text-gray-300 text-sm">{reply.content}</p>
                   </div>
-                  <p className="text-gray-300 text-sm">{reply.content}</p>
                 </div>
               ))}
 
