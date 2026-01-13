@@ -96,22 +96,18 @@ export function Guestbook() {
 
   const handleAdminLogin = async () => {
     try {
-      const { data, error } = await supabase
-        .from('admin_settings')
-        .select('password')
-        .eq('id', 1)
-        .single();
+      const { verifyAdminPassword } = await import("@/app/actions/admin");
+      const result = await verifyAdminPassword(adminPassword);
 
-      if (error) throw error;
-
-      if (data && adminPassword === data.password) {
+      if (result.success) {
         setIsAdmin(true);
         setShowAdminLogin(false);
         setAdminPassword("");
       } else {
-        alert("비밀번호가 틀렸습니다.");
+        alert(result.error || "비밀번호가 틀렸습니다.");
       }
-    } catch {
+    } catch (error) {
+      console.error("Login verification failed:", error);
       alert("인증에 실패했습니다.");
     }
   };
@@ -140,7 +136,7 @@ export function Guestbook() {
 
       {showAdminLogin && !isAdmin && (
         <div className="mb-6 p-4 bg-white/5 rounded-xl border border-white/10">
-          <div className="flex gap-2">
+          <div className="flex flex-col sm:flex-row gap-2">
             <input
               type="password"
               value={adminPassword}
@@ -151,7 +147,7 @@ export function Guestbook() {
             />
             <button
               onClick={handleAdminLogin}
-              className="px-4 py-2 bg-cyan-600 text-white text-sm rounded-lg hover:bg-cyan-500 transition-colors"
+              className="px-4 py-2 bg-cyan-600 text-white text-sm rounded-lg hover:bg-cyan-500 transition-colors whitespace-nowrap"
             >
               확인
             </button>
