@@ -156,7 +156,7 @@ export const EXPERIENCE = [
 export const PROJECTS = [
   {
     name: "3D Portfolio",
-    period: "2025.01 (개인 프로젝트)",
+    period: "2026.01 (개인 프로젝트)",
     role: "Frontend Developer",
     description: "Three.js 기반 인터랙티브 3D 포트폴리오 사이트",
     image: "/images/projects/portfolio3d.png",
