@@ -45,14 +45,6 @@ export const PROFILE = {
       ]
     },
     {
-      title: "리더십과 협업 중심의 개발 문화 기여",
-      content: [
-        "17세부터 다양한 현장에서 일하며 사람들과 소통하고 협업하는 법을 배워왔으며, 특히 6년간의 서비스직 경험은 유연한 대처 능력과 고객 중심의 사고를 갖추게 했습니다.",
-        "경험을 통해 체득한 전략적 사고와 유연한 대처 능력을 활용하여 문제상황을 사전에 방지 및 신속하게 해결하며 프로젝트의 성공적인 마무리에 기여했습니다.",
-        "이러한 경험을 바탕으로 팀 내에서도 정기적인 코드 리뷰 문화 및 회고 프로세스를 정착시키는데 기여하며 팀 전체의 효율적인 커뮤니케이션과 기술적 시너지를 이끌어내는 데 주력하고 있습니다."
-      ]
-    },
-    {
       title: "포부: 신뢰받는 개발자",
       content: [
         "사용자와 팀 모두에게 신뢰를 주는 개발자가 되겠습니다.",
@@ -75,35 +67,21 @@ export const EXPERIENCE = [
     company: "자리컴퍼니",
     role: "Frontend Developer",
     period: "2025.07 ~ 재직중",
-    description: "자리톡 – 주거서비스 연결 플랫폼",
+    description: "자리톡 – 500만 가입자 부동산 서비스 플랫폼",
     projects: [
-      // {
-      //   title: "신규 견적 서비스 MVP 단독 개발",
-      //   details: [
-      //     "초기 기획 회의 참여 및 채팅 UI 설계",
-      //     "어드민 카테고리별 폼 생성기 구현",
-      //     "견적 채팅, 카테고리 페이지, 실시간 채팅 구현"
-      //   ]
-      // },
       {
-        title: "혜택 탭 서비스 개발",
+        title: "견적 매칭 서비스 MVP 0→1 단독 개발",
         details: [
-          "A/B 테스트 기반 UX 개선",
-          "사용자 행동 데이터 분석 및 실험 결과 반영 구조 설계",
+          "유저·마스터 양방향 E2E 플로우 기획 참여부터 배포까지 단독 개발",
+          "Framer Motion variant 기반 채팅형 다단계 인터랙션 구현",
+          "운영팀 자율 배포를 위한 No-Code 폼 빌더 시스템 설계·개발",
         ]
       },
       {
-        title: "DX 개선 및 디자인 컴포넌트 개발",
+        title: "주도적 DX 개선",
         details: [
-          "Tooltip, DatePicker, 주소지 검색 UI 등 공통 UI 컴포넌트 개발",
-          "ESLint 타입 규칙 적용 및 공통 유틸/커스텀 Hooks 정리",
-        ]
-      },
-      {
-        title: "애자일 릴리즈 사이클 CI/CD",
-        details: [
-          "주 1회 배포의 애자일 릴리스 사이클 기여",
-          "유저 피드백 우선순위에 따른 실시간 대응 및 에러 리포팅 대응",
+          "GitHub Actions 기반 QA 자동화 워크플로우 구축, QA 작성 공수 약 90% 절감",
+          "사내 디자인 문서 사이트 구축 (47개 컴포넌트 라이브 문서화)",
         ]
       }
     ]
@@ -154,6 +132,19 @@ export const EXPERIENCE = [
 ];
 
 export const PROJECTS = [
+  {
+    name: "오오디",
+    period: "2026.02 ~ 2026.04 (팀 프로젝트)",
+    role: "Frontend Developer",
+    description: "우리 위치의 중간 약속 장소 찾기 서비스",
+    image: "/images/projects/oodi.png",
+    link: "https://o-odi.com/",
+    tech: ["Next.js", "TypeScript"],
+    features: [
+      "중간 지점 기반 약속 장소 추천",
+      "위치 기반 장소 검색 및 공유",
+    ]
+  },
   {
     name: "3D Portfolio",
     period: "2026.01 (개인 프로젝트)",
