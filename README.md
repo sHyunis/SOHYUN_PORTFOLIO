@@ -1,37 +1,49 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 정소현 Frontend Portfolio
 
-## Getting Started
+사용자가 멈칫하는 순간을 정리하고, 팀이 손으로 반복하는 일을 시스템으로 바꾸어 온 경험을 담은 포트폴리오입니다.
 
-First, run the development server:
+[포트폴리오 바로가기](https://portfolio-jsh-xi.vercel.app)
+
+## 주요 내용
+
+- 자리톡에서 진행한 No-Code 폼 빌더, QA 자동화, App Router·TanStack Query 마이그레이션
+- 위밋모빌리티에서 진행한 실시간 관제, 오더 시스템, 대량 업로드, 공통 테이블·필터 시스템
+- 문제 상황, 해결 방법, 정량적 결과를 함께 보여주는 경력 타임라인
+- 오늘 헤어졌어요를 포함한 개인·팀 프로젝트와 핵심 기여 내용
+- 3D 월드 탐색과 전체 내용을 빠르게 확인하는 Overview 화면
+- Supabase 기반 방명록과 관리자 답글 기능
+
+## 기술 스택
+
+- Next.js 16, React 19, TypeScript
+- React Three Fiber, Drei, Three.js
+- Framer Motion, Zustand, Lenis
+- Tailwind CSS 4
+- Supabase, Vercel
+
+## 로컬 실행
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+pnpm install
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+개발 서버는 [http://localhost:3000](http://localhost:3000)에서 확인할 수 있습니다.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 검증
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+pnpm lint
+pnpm build
+```
 
-## Learn More
+## 주요 구조
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-# SOHYUN_PORTFOLIO
+```text
+app/                    Next.js App Router와 메타데이터
+components/3d/          3D 월드, 아바타, 카메라 인터랙션
+components/experience/  경력과 문제 해결 성과
+components/projects/    개인·팀 프로젝트
+components/data.ts      프로필, 경력, 프로젝트 콘텐츠
+store/                  3D 월드와 UI 상태
+```

@@ -19,7 +19,7 @@ export function WorkExperience() {
         <div className="space-y-20">
           {EXPERIENCE.map((exp, index) => (
             <motion.div
-              key={index}
+              key={exp.company}
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: index * 0.1 }}
@@ -34,13 +34,21 @@ export function WorkExperience() {
               </div>
 
               <div className="space-y-12 relative border-l border-white/10 pl-8 md:pl-12">
-                {exp.projects.map((project, pIndex) => (
-                  <div key={pIndex} className="relative">
+                {exp.projects.map((project) => (
+                  <div key={project.title} className="relative">
                     <div className="absolute -left-[37px] md:-left-[53px] top-2 w-3 h-3 rounded-full bg-accent ring-4 ring-background" />
-                    <h4 className="text-xl font-bold text-white mb-4">{project.title}</h4>
+                    <div className="mb-4 flex flex-wrap items-center gap-3">
+                      <h4 className="text-xl font-bold text-white">{project.title}</h4>
+                      <span className="rounded-full border border-accent/20 bg-accent/10 px-3 py-1 text-xs font-medium text-accent">
+                        {project.tag}
+                      </span>
+                    </div>
+                    <p className="mb-4 leading-relaxed text-gray-200">
+                      {project.summary}
+                    </p>
                     <ul className="space-y-3">
-                      {project.details.map((detail, dIndex) => (
-                        <li key={dIndex} className="text-gray-400 leading-relaxed flex items-start">
+                      {project.details.map((detail) => (
+                        <li key={detail} className="text-gray-400 leading-relaxed flex items-start">
                           <span className="mr-3 mt-2 w-1.5 h-1.5 rounded-full bg-white/30 flex-shrink-0" />
                           {detail}
                         </li>

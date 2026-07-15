@@ -21,7 +21,7 @@ export function Projects() {
         <div className="grid md:grid-cols-2 gap-8">
           {PROJECTS.map((project, index) => (
             <motion.div
-              key={index}
+              key={project.name}
               initial={{ opacity: 0, scale: 0.95 }}
               whileInView={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
@@ -32,7 +32,7 @@ export function Projects() {
                 <div className="relative aspect-video mb-8 overflow-hidden rounded-2xl border border-white/10">
                   <Image 
                     src={project.image} 
-                    alt={''}
+                    alt={`${project.name} 프로젝트 화면`}
                     fill
                     className="object-cover group-hover:scale-105 transition-transform duration-500"
                   />
@@ -72,10 +72,10 @@ export function Projects() {
               </div>
 
               <div className="space-y-2">
-                <h4 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-3">Key Features</h4>
+                <h4 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-3">Key Contributions</h4>
                 <ul className="space-y-2">
-                  {project.features.map((feature, fIndex) => (
-                    <li key={fIndex} className="text-sm text-gray-500 flex items-start">
+                  {project.features.map((feature) => (
+                    <li key={feature} className="text-sm text-gray-500 flex items-start">
                       <span className="mr-2 mt-1.5 w-1 h-1 rounded-full bg-accent flex-shrink-0" />
                       {feature}
                     </li>
